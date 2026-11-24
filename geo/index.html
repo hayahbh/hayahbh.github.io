@@ -276,11 +276,24 @@
   #guessInput:focus,#guessInputC:focus{box-shadow:none!important;}
   .guess-row::before{display:none;}
   .progress-outer{background:transparent;}
+  .head-actions{display:flex;align-items:center;gap:4px;flex:none;}
+  .acct{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;align-items:center;justify-content:center;
+    padding:24px max(16px,env(safe-area-inset-left,0px)) calc(24px + env(safe-area-inset-bottom,0px));overflow:auto;}
+  .acct[hidden]{display:none;}
+  .acct-in{width:100%;max-width:460px;display:flex;flex-direction:column;gap:14px;text-align:center;}
+  .acct h2{font-size:clamp(24px,5vw,32px);font-weight:800;margin:0;}
+  .acct-sub,.acct-note{color:var(--muted);font-size:14px;margin:0;}
+  .acct-list{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 18px;}
+  .acct-list button{background:none;border:0;color:var(--ink);font:inherit;font-size:17px;font-weight:700;cursor:pointer;padding:6px 2px;}
+  .acct-list button:hover,.acct-list button.on{color:var(--num);}
+  #acctName{background:transparent;border:0;color:var(--ink);font:inherit;font-size:22px;text-align:center;padding:10px;outline:none;}
+  .acct-actions{display:flex;justify-content:center;gap:10px;}
+  .acct .primary,.acct .ghost{background:transparent!important;border:0!important;box-shadow:none!important;}
 </style>
 </head>
 <body>
 
-<div class="head-row"><h1> خبير الجغرافيا / Geo Expert</h1><button class="theme-btn" id="themeBtn" type="button"></button></div>
+<div class="head-row"><h1> خبير الجغرافيا / Geo Expert</h1><div class="head-actions"><button class="theme-btn" id="acctBtn" type="button"></button><button class="theme-btn" id="themeBtn" type="button"></button></div></div>
 <div class="sub">خمّن الدولة أو المدينة الغامضة بكتابة اسمها، كل تخمين يلوّن الكرة الأرضية حسب قربه من الجواب. اختر تبويب "الدول" أو "المدن" فوق. / Guess the mystery country or city by typing its name, each guess lights up the globe based on how close it is. Pick the "Countries" or "Cities" tab above.</div>
 
 <div class="tabs">
@@ -452,6 +465,20 @@
   </div>
 </div>
 
+
+<div id="acct" class="acct" hidden>
+  <div class="acct-in">
+    <h2>سجّل حسابك / Create your profile</h2>
+    <p class="acct-sub">اكتب اسمك عشان نحفظ تقدمك ومستواك باسمك. / Type your name to keep your progress under it.</p>
+    <div id="acctList" class="acct-list"></div>
+    <input id="acctName" maxlength="24" autocomplete="nickname" placeholder="اسمك... / Your name...">
+    <div class="acct-actions">
+      <button class="primary" id="acctGo" type="button">ابدأ / Start</button>
+      <button class="ghost" id="acctLater" type="button">لاحقًا / Later</button>
+    </div>
+    <p class="acct-note">الحساب محفوظ على هذا الجهاز فقط. / Saved on this device only.</p>
+  </div>
+</div>
 <footer style="text-align:center;font-size:11px;color:var(--muted);margin:18px 0 6px;">© 2026 هياء بن حسن، جميع الحقوق محفوظة / All rights reserved</footer>
 <script src="https://cdn.jsdelivr.net/npm/animejs@4.4.1/dist/bundles/anime.umd.min.js"></script>
 <script>
@@ -785,7 +812,13 @@ function pointInPolygon(px, py, pts){
 }
 
 /* ------------- persistence ------------- */
-const STORE_KEY = "geoGlobeProgress_v2";
+/* ------------- player profiles (saved on this device) ------------- */
+const PROFILES_KEY = "geoProfiles_v1";
+let PROFILES = {list:[], active:null};
+try{ const r = JSON.parse(localStorage.getItem(PROFILES_KEY)); if(r && Array.isArray(r.list)) PROFILES = r; }catch(e){}
+function saveProfiles(){ try{ localStorage.setItem(PROFILES_KEY, JSON.stringify(PROFILES)); }catch(e){} }
+const keyFor = id => "geoGlobeProgress_v2::" + (id || "guest");
+let STORE_KEY = keyFor(PROFILES.active);
 function todayStr(){ return new Date().toISOString().slice(0,10); }
 function loadProgress(){
   let raw = null;
@@ -881,7 +914,7 @@ function countryColor(c){
   if(solved && c === mystery) return "#f0c454";
   const g = guesses.find(g => g.country === c);
   if(g) return heatColor(g.score);
-  return "#8fae6b";
+  return "#e2d6bb";
 }
 
 function drawGlobe(){
@@ -954,7 +987,7 @@ function drawGlobe(){
         if(!traceRing(ctx, ring, project, CX, CY, RAD())) return;
         ctx.fillStyle = fill;
         ctx.fill();
-        ctx.strokeStyle = isHovered ? "rgba(255,255,255,0.95)" : "rgba(20,30,15,0.5)";
+        ctx.strokeStyle = isHovered ? "rgba(255,255,255,0.95)" : "rgba(24,34,59,0.55)";
         ctx.lineWidth = isHovered ? 1.8 : 0.6;
         ctx.stroke();
       });
@@ -965,7 +998,7 @@ function drawGlobe(){
         ctx.beginPath();
         ctx.arc(p.x, p.y, isHovered ? 7 : 5, 0, Math.PI*2);
         ctx.fillStyle = fill;
-        ctx.strokeStyle = isHovered ? "rgba(255,255,255,0.95)" : "rgba(20,30,15,0.6)";
+        ctx.strokeStyle = isHovered ? "rgba(255,255,255,0.95)" : "rgba(24,34,59,0.6)";
         ctx.lineWidth = isHovered ? 2 : 1;
         ctx.fill(); ctx.stroke();
       }
@@ -1582,9 +1615,9 @@ function drawCityGlobe(){
     if(!shape) return;
     shape.forEach(ring=>{
       if(!traceRing(ctxC, ring, projectC, CXC, CYC, RADC())) return;
-      ctxC.fillStyle = "rgba(150,175,140,0.35)";
+      ctxC.fillStyle = "rgba(226,214,187,0.45)";
       ctxC.fill();
-      ctxC.strokeStyle = "rgba(20,30,15,0.35)";
+      ctxC.strokeStyle = "rgba(24,34,59,0.4)";
       ctxC.lineWidth = 0.5;
       ctxC.stroke();
     });
@@ -1600,7 +1633,7 @@ function drawCityGlobe(){
     ctxC.beginPath();
     ctxC.arc(p.x, p.y, isHovered ? 7 : 4.5, 0, Math.PI*2);
     ctxC.fillStyle = cityColor(c);
-    ctxC.strokeStyle = isHovered ? "rgba(255,255,255,0.95)" : "rgba(20,30,15,0.6)";
+    ctxC.strokeStyle = isHovered ? "rgba(255,255,255,0.95)" : "rgba(24,34,59,0.6)";
     ctxC.lineWidth = isHovered ? 2 : 0.8;
     ctxC.fill(); ctxC.stroke();
     ctxC.globalAlpha = 1;
@@ -1931,6 +1964,43 @@ animateC();
 updateTopStats();
 newRound();
 animate();
+
+
+/* profiles: sign up / switch player */
+(function(){
+  const over=document.getElementById('acct'), list=document.getElementById('acctList'), nameIn=document.getElementById('acctName'), btn=document.getElementById('acctBtn');
+  const current=()=>PROFILES.list.find(p=>p.id===PROFILES.active);
+  function label(){ const p=current(); btn.textContent = p ? p.name : 'تسجيل / Sign up'; btn.setAttribute('aria-label', p ? 'تبديل الحساب' : 'تسجيل حساب'); }
+  function use(id){
+    PROFILES.active=id; saveProfiles();
+    STORE_KEY=keyFor(id); PROGRESS=loadProgress();
+    updateTopStats(); updateTopStatsC();
+    if(!document.getElementById('tab-progress').classList.contains('hidden')) renderProgressTab();
+    label(); over.hidden=true;
+  }
+  function open(){
+    list.innerHTML='';
+    PROFILES.list.forEach(p=>{ const b=document.createElement('button'); b.type='button'; b.textContent=p.name; if(p.id===PROFILES.active) b.className='on'; b.onclick=()=>use(p.id); list.appendChild(b); });
+    nameIn.value=''; over.hidden=false; setTimeout(()=>nameIn.focus(),50);
+  }
+  function create(){
+    const name=nameIn.value.trim().slice(0,24);
+    if(!name){ nameIn.focus(); showToast('اكتب اسمك أول / Type your name first'); return; }
+    const found=PROFILES.list.find(p=>p.name===name);
+    if(found) return use(found.id);
+    const id='p'+Date.now().toString(36);
+    // the very first profile keeps any progress made before accounts existed
+    if(!PROFILES.list.length){ try{ const old=localStorage.getItem('geoGlobeProgress_v2')||localStorage.getItem(keyFor(null)); if(old) localStorage.setItem(keyFor(id),old); }catch(e){} }
+    PROFILES.list.push({id,name}); use(id);
+    showToast('أهلًا '+name+'! تقدمك صار محفوظ باسمك');
+  }
+  document.getElementById('acctGo').onclick=create;
+  nameIn.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); create(); } });
+  document.getElementById('acctLater').onclick=()=>{ over.hidden=true; };
+  btn.onclick=open;
+  label();
+  if(!current()) open();
+})();
 
 /* day / night toggle */
 (function(){
