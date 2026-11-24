@@ -289,16 +289,37 @@
   #acctName{background:transparent;border:0;color:var(--ink);font:inherit;font-size:22px;text-align:center;padding:10px;outline:none;}
   .acct-actions{display:flex;justify-content:center;gap:10px;}
   .acct .primary,.acct .ghost{background:transparent!important;border:0!important;box-shadow:none!important;}
+  .diff-row{display:flex;flex-wrap:wrap;align-items:center;gap:2px 16px;margin:2px 0 8px;}
+  .diff-label{color:var(--muted);font-size:13px;font-weight:700;}
+  .dbtn{background:none;border:0;color:var(--muted);font:inherit;font-size:14px;font-weight:700;cursor:pointer;padding:6px 2px;transition:color .15s;}
+  .dbtn:hover{color:var(--ink);} .dbtn.on{color:var(--num);}
+  .ch-meta{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums;margin-top:10px;}
+  #chTimer{color:var(--num);font-size:20px;}
+  .ch-prompt{font-size:clamp(20px,3.8vw,30px);font-weight:700;text-align:center;margin:22px 0 10px;line-height:1.5;}
+  .ch-prompt b{color:var(--num);}
+  #chShape{display:block;margin:12px auto 0;width:100%;max-width:360px;height:auto;background:none;}
+  #chShape[hidden]{display:none;}
+  #chInput{flex:1;min-width:200px;min-height:50px;font-size:18px;background:transparent;border:0;color:var(--ink);font-family:inherit;padding:12px 4px;outline:none;}
+  .ch-feedback{min-height:28px;text-align:center;font-weight:700;margin-top:8px;}
+  .ch-feedback.ok{color:var(--num);} .ch-feedback.no{color:var(--muted);}
+  .ccard{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:12px;font-size:14px;font-weight:400;color:var(--ink);}
+  .ccard b{color:var(--num);font-weight:700;}
+  .share-btn{margin-top:12px;color:var(--num)!important;}
+  .ex-line{font-size:16px;margin:4px 0;} .ex-line b{color:var(--num);font-size:22px;}
+  .ach-list{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:10px;}
+  .ach-list span{font-size:14px;font-weight:700;color:var(--muted);opacity:.55;}
+  .ach-list span.got{color:var(--num);opacity:1;}
 </style>
 </head>
 <body>
 
-<div class="head-row"><h1> خبير الجغرافيا / Geo Expert</h1><div class="head-actions"><button class="theme-btn" id="acctBtn" type="button"></button><button class="theme-btn" id="themeBtn" type="button"></button></div></div>
+<div class="head-row"><h1> خبير الجغرافيا / Geo Expert</h1><div class="head-actions"><button class="theme-btn" id="acctBtn" type="button"></button><button class="theme-btn" id="soundBtn" type="button"></button><button class="theme-btn" id="themeBtn" type="button"></button></div></div>
 <div class="sub">خمّن الدولة أو المدينة الغامضة بكتابة اسمها، كل تخمين يلوّن الكرة الأرضية حسب قربه من الجواب. اختر تبويب "الدول" أو "المدن" فوق. / Guess the mystery country or city by typing its name, each guess lights up the globe based on how close it is. Pick the "Countries" or "Cities" tab above.</div>
 
 <div class="tabs">
   <button class="tab-btn active" data-tab="daily"> الدول / Countries</button>
   <button class="tab-btn" data-tab="cities"> المدن / Cities</button>
+  <button class="tab-btn" data-tab="challenge">تحديات / Challenges</button>
   <button class="tab-btn" data-tab="progress"> تطوري / Progress</button>
 </div>
 
@@ -315,6 +336,12 @@
     <div class="progress-outer"><div class="progress-inner" id="levelBar" style="width:0%"></div></div>
   </div>
 
+  <div class="diff-row" id="diffRow">
+    <span class="diff-label">المستوى / Difficulty:</span>
+    <button type="button" class="dbtn" data-d="easy">سهل / Easy</button>
+    <button type="button" class="dbtn" data-d="medium">متوسط / Medium</button>
+    <button type="button" class="dbtn" data-d="hard">صعب / Hard</button>
+  </div>
   <div class="card">
     <div id="globeWrap">
       <div class="zoom-controls">
@@ -429,7 +456,34 @@
 <div class="toast" id="toast"></div>
 
 
+<div id="tab-challenge" class="hidden">
+  <div class="card">
+    <div class="diff-row" id="chModes">
+      <span class="diff-label">التحدي / Challenge:</span>
+      <button type="button" class="dbtn on" data-m="cap2c">من العاصمة إلى الدولة / Capital to country</button>
+      <button type="button" class="dbtn" data-m="c2cap">من الدولة إلى العاصمة / Country to capital</button>
+      <button type="button" class="dbtn" data-m="shape">من الشكل إلى الدولة / Shape to country</button>
+    </div>
+    <div class="diff-row" id="chTimes">
+      <span class="diff-label">الوقت / Time:</span>
+      <button type="button" class="dbtn on" data-t="0">بدون وقت / Untimed</button>
+      <button type="button" class="dbtn" data-t="60">دقيقة واحدة / One minute</button>
+    </div>
+    <div class="ch-meta"><span id="chScore"></span><span id="chTimer"></span><span id="chBest"></span></div>
+    <canvas id="chShape" width="360" height="260" hidden></canvas>
+    <div id="chPrompt" class="ch-prompt"></div>
+    <div class="guess-input-row">
+      <input id="chInput" autocomplete="off" placeholder="اكتب إجابتك... / Type your answer...">
+      <button class="primary" id="chGo" type="button">أجب / Answer</button>
+      <button class="ghost" id="chSkip" type="button">تخطَّ / Skip</button>
+      <button class="ghost" id="chStart" type="button">ابدأ من جديد / Restart</button>
+    </div>
+    <div id="chFeedback" class="ch-feedback"></div>
+  </div>
+</div>
+
 <div id="tab-progress" class="hidden">
+  <div class="card" id="extraStats"></div>
   <div class="card">
     <div class="row">
       <div class="col">
@@ -1235,12 +1289,12 @@ function showToast(msg){
 let hintsUsed = 0;
 const HINT_STEPS = [
   c => `اسم الدولة يبدأ بحرف / Country starts with: <b>«${c.n.replace(/^ال/,'')[0]}» / "${c.en[0]}"</b>`,
-  c => `العاصمة تبدأ بحرف / Capital starts with: <b>«${c.cap.replace(/^ال/,'')[0]}» / "${c.capen[0]}"</b>`,
-  c => `العاصمة / Capital: <b>${c.cap} / ${c.capen}</b>`,
+  c => `العاصمة تبدأ بحرف / Capital starts with: <b>«${(c.cap||c.capen).replace(/^ال/,'')[0]}» / "${c.capen[0]}"</b>`,
+  c => `العاصمة / Capital: <b>${c.cap||c.capen} / ${c.capen}</b>`,
 ];
 
 function newRound(){
-  mystery = PLAYABLE[Math.floor(Math.random()*PLAYABLE.length)];
+  mystery = pickMystery();
   guesses = [];
   solved = false;
   hintsUsed = 0;
@@ -1258,6 +1312,7 @@ function newRound(){
   guessInput.focus();
   renderGuesses();
   updateTopStats();
+  updateModeNote();
   markDirty();
 }
 
@@ -1311,6 +1366,8 @@ function submitGuess(){
   guesses.push({ country:c, dist, score });
   renderGuesses();
   markDirty();
+  markSeen(c);
+  if(c !== mystery) focusCountry(c);
 
   if(c === mystery){
     solved = true;
@@ -1334,6 +1391,7 @@ function submitGuess(){
     winBanner.innerHTML = ` صح! الدولة كانت ${mystery.flag} ${mystery.n} / ${mystery.en}، بعد ${n} تخمين${n>1?'ات':''}! (+${xp} XP)<br>
      Correct! It was ${mystery.en}, solved in ${n} guess${n>1?'es':''}! (+${xp} XP)
     ${fact ? `<div style="margin-top:10px;padding-top:10px;font-size:13px;font-weight:400;text-align:right"> معلومة ممتعة / Fun fact: ${fact}</div>` : ''}`;
+    afterFinish(true, n);
     updateTopStats();
   }
 }
@@ -1353,6 +1411,7 @@ function giveUp(){
   PROGRESS.history.push({ date: todayStr(), country: mystery.n+" / "+mystery.en, guesses: guesses.length, result:'gaveup', type:'country' });
   if(PROGRESS.history.length>30) PROGRESS.history.shift();
   saveProgress();
+  afterFinish(false, guesses.length);
 }
 giveupBtn.addEventListener('click', giveUp);
 
@@ -1373,6 +1432,7 @@ function updateTopStats(){
 }
 
 function renderProgressTab(){
+  renderExtras();
   const {level} = levelFromXP(PROGRESS.xp);
   document.getElementById('pLevel').textContent = level;
   document.getElementById('pXP').textContent = PROGRESS.xp;
@@ -1409,9 +1469,8 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     const tab = btn.dataset.tab;
-    document.getElementById('tab-daily').classList.toggle('hidden', tab!=='daily');
-    document.getElementById('tab-cities').classList.toggle('hidden', tab!=='cities');
-    document.getElementById('tab-progress').classList.toggle('hidden', tab!=='progress');
+    ['daily','cities','challenge','progress'].forEach(t=>document.getElementById('tab-'+t).classList.toggle('hidden', tab!==t));
+    if(tab==='challenge' && !CH.item) chNext();
     if(tab==='progress') renderProgressTab();
   });
 });
@@ -1893,6 +1952,7 @@ function submitGuessC(){
   const dist = haversine(c.lat,c.lon,mysteryC.lat,mysteryC.lon);
   const score = c===mysteryC ? 100 : scoreFromDistance(dist);
   guessesC.push({ city:c, dist, score });
+  if(c !== mysteryC) focusCity(c);
   renderGuessesC();
   markDirtyC();
 
@@ -1920,6 +1980,7 @@ function submitGuessC(){
     ${fact ? `<div style="margin-top:10px;padding-top:10px;font-size:13px;font-weight:400;text-align:right"> معلومة ممتعة / Fun fact: ${fact}</div>` : ''}`;
     updateTopStats();
     updateTopStatsC();
+    playWin(); focusCity(mysteryC); checkAchievements();
   }
 }
 
@@ -1938,6 +1999,7 @@ function giveUpC(){
   PROGRESS.history.push({ date: todayStr(), country: mysteryC.city+" / "+mysteryC.cityEn, guesses: guessesC.length, result:'gaveup', type:'city' });
   if(PROGRESS.history.length>30) PROGRESS.history.shift();
   saveProgress();
+  focusCity(mysteryC);
 }
 giveupBtnC.addEventListener('click', giveUpC);
 
@@ -1961,10 +2023,222 @@ newRoundC();
 animateC();
 
 /* ------------- init ------------- */
+
+
+
+/* ================= additions: daily puzzle, levels, card, share, achievements, sound, focus, challenges ================= */
+const INFO = {"Bulgaria":{"cur":"ليف بلغاري","lang":"البلغارية","area":110879,"reg":"Europe","sub":"Southeast Europe"},"Myanmar":{"cur":"كيات ميانمار","lang":"البورمية","area":676578,"reg":"Asia","sub":"South-Eastern Asia"},"Burundi":{"cur":"فرنك بروندي","lang":"الفرنسية، الرندي","area":27834,"reg":"Africa","sub":"Eastern Africa"},"Belarus":{"cur":"روبل بيلاروسي","lang":"البيلاروسية، الروسية","area":207600,"reg":"Europe","sub":"Eastern Europe"},"Cambodia":{"cur":"رييال كمبودي","lang":"الخميرية","area":181035,"reg":"Asia","sub":"South-Eastern Asia"},"Cameroon":{"cur":"فرنك وسط أفريقي","lang":"الإنجليزية، الفرنسية","area":475442,"reg":"Africa","sub":"Middle Africa"},"Canada":{"cur":"دولار كندي","lang":"الإنجليزية، الفرنسية","area":9984670,"reg":"Americas","sub":"North America"},"Cape Verde":{"cur":"اسكودو الرأس الأخضر","lang":"البرتغالية","area":4033,"reg":"Africa","sub":"Western Africa"},"Central African Republic":{"cur":"فرنك وسط أفريقي","lang":"الفرنسية، السانجو","area":622984,"reg":"Africa","sub":"Middle Africa"},"Sri Lanka":{"cur":"روبية سريلانكية","lang":"السنهالية، التاميلية","area":65610,"reg":"Asia","sub":"Southern Asia"},"Chad":{"cur":"فرنك وسط أفريقي","lang":"العربية، الفرنسية","area":1284000,"reg":"Africa","sub":"Middle Africa"},"Chile":{"cur":"بيزو تشيلي","lang":"الإسبانية","area":756102,"reg":"Americas","sub":"South America"},"China":{"cur":"يوان صيني","lang":"الصينية","area":9706961,"reg":"Asia","sub":"Eastern Asia"},"Taiwan":{"cur":"دولار تايواني","lang":"الصينية","area":36193,"reg":"Asia","sub":"Eastern Asia"},"Colombia":{"cur":"بيزو كولومبي","lang":"الإسبانية","area":1141748,"reg":"Americas","sub":"South America"},"Comoros":{"cur":"فرنك جزر القمر","lang":"العربية، الفرنسية","area":1862,"reg":"Africa","sub":"Eastern Africa"},"Republic of the Congo":{"cur":"فرنك وسط أفريقي","lang":"الفرنسية، الكونغو","area":342000,"reg":"Africa","sub":"Middle Africa"},"DR Congo":{"cur":"فرنك كونغولي","lang":"الفرنسية، الكونغو","area":2344858,"reg":"Africa","sub":"Middle Africa"},"Costa Rica":{"cur":"كولن كوستاريكي","lang":"الإسبانية","area":51100,"reg":"Americas","sub":"Central America"},"Croatia":{"cur":"يورو","lang":"الكرواتية","area":56594,"reg":"Europe","sub":"Southeast Europe"},"Cuba":{"cur":"بيزو كوبي قابل للتحويل","lang":"الإسبانية","area":109884,"reg":"Americas","sub":"Caribbean"},"Cyprus":{"cur":"يورو","lang":"اليونانية، التركية","area":9251,"reg":"Europe","sub":"Southern Europe"},"Czech Republic":{"cur":"كرونة تشيكية","lang":"التشيكية، السلوفاكية","area":78865,"reg":"Europe","sub":"Central Europe"},"Benin":{"cur":"فرنك غرب أفريقي","lang":"الفرنسية","area":112622,"reg":"Africa","sub":"Western Africa"},"Denmark":{"cur":"كرونة دنماركية","lang":"الدانمركية","area":43094,"reg":"Europe","sub":"Northern Europe"},"Dominica":{"cur":"دولار شرق الكاريبي","lang":"الإنجليزية","area":751,"reg":"Americas","sub":"Caribbean"},"Dominican Republic":{"cur":"بيزو الدومنيكان","lang":"الإسبانية","area":48671,"reg":"Americas","sub":"Caribbean"},"Ecuador":{"cur":"دولار أمريكي","lang":"الإسبانية","area":276841,"reg":"Americas","sub":"South America"},"El Salvador":{"cur":"دولار أمريكي","lang":"الإسبانية","area":21041,"reg":"Americas","sub":"Central America"},"Equatorial Guinea":{"cur":"فرنك وسط أفريقي","lang":"الفرنسية، البرتغالية","area":28051,"reg":"Africa","sub":"Middle Africa"},"Ethiopia":{"cur":"بير أثيوبي","lang":"الأمهرية","area":1104300,"reg":"Africa","sub":"Eastern Africa"},"Eritrea":{"cur":"ناكفا أريتري","lang":"العربية، الإنجليزية","area":117600,"reg":"Africa","sub":"Eastern Africa"},"Estonia":{"cur":"يورو","lang":"الإستونية","area":45227,"reg":"Europe","sub":"Northern Europe"},"Falkland Islands":{"cur":"جنيه جزر فوكلاند","lang":"الإنجليزية","area":12173,"reg":"Americas","sub":"South America"},"Fiji":{"cur":"دولار فيجي","lang":"الإنجليزية، الفيجية","area":18272,"reg":"Oceania","sub":"Melanesia"},"Finland":{"cur":"يورو","lang":"الفنلندية، السويدية","area":338424,"reg":"Europe","sub":"Northern Europe"},"France":{"cur":"يورو","lang":"الفرنسية","area":551695,"reg":"Europe","sub":"Western Europe"},"French Southern and Antarctic Lands":{"cur":"يورو","lang":"الفرنسية","area":7747,"reg":"Antarctic","sub":""},"Djibouti":{"cur":"فرنك جيبوتي","lang":"العربية، الفرنسية","area":23200,"reg":"Africa","sub":"Eastern Africa"},"Gabon":{"cur":"فرنك وسط أفريقي","lang":"الفرنسية","area":267668,"reg":"Africa","sub":"Middle Africa"},"Georgia":{"cur":"لارى جورجي","lang":"الجورجية","area":69700,"reg":"Asia","sub":"Western Asia"},"Gambia":{"cur":"دلاسي غامبي","lang":"الإنجليزية","area":10689,"reg":"Africa","sub":"Western Africa"},"Palestine":{"cur":"جنيه مصري","lang":"العربية","area":6220,"reg":"Asia","sub":"Western Asia"},"Germany":{"cur":"يورو","lang":"الألمانية","area":357114,"reg":"Europe","sub":"Western Europe"},"Ghana":{"cur":"سيدي غانا","lang":"الإنجليزية","area":238533,"reg":"Africa","sub":"Western Africa"},"Kiribati":{"cur":"دولار أسترالي","lang":"الإنجليزية، لغة أهل جبل طارق","area":811,"reg":"Oceania","sub":"Micronesia"},"Greece":{"cur":"يورو","lang":"اليونانية","area":131990,"reg":"Europe","sub":"Southern Europe"},"Greenland":{"cur":"كرونة دنماركية","lang":"الكالاليست","area":2166086,"reg":"Americas","sub":"North America"},"Grenada":{"cur":"دولار شرق الكاريبي","lang":"الإنجليزية","area":344,"reg":"Americas","sub":"Caribbean"},"Guatemala":{"cur":"كوتزال غواتيمالا","lang":"الإسبانية","area":108889,"reg":"Americas","sub":"Central America"},"Guinea":{"cur":"فرنك غينيا","lang":"الفرنسية","area":245857,"reg":"Africa","sub":"Western Africa"},"Guyana":{"cur":"دولار غيانا","lang":"الإنجليزية","area":214969,"reg":"Americas","sub":"South America"},"Haiti":{"cur":"جوردى هايتي","lang":"الفرنسية، الكريولية الهايتية","area":27750,"reg":"Americas","sub":"Caribbean"},"Vatican City":{"cur":"يورو","lang":"الإيطالية، اللاتينية","area":0,"reg":"Europe","sub":"Southern Europe"},"Honduras":{"cur":"ليمبيرا هنداروس","lang":"الإسبانية","area":112492,"reg":"Americas","sub":"Central America"},"Hungary":{"cur":"فورينت هنغاري","lang":"الهنغارية","area":93028,"reg":"Europe","sub":"Central Europe"},"Iceland":{"cur":"كرونة أيسلندية","lang":"الأيسلندية","area":103000,"reg":"Europe","sub":"Northern Europe"},"India":{"cur":"روبية هندي","lang":"الإنجليزية، الهندية","area":3287590,"reg":"Asia","sub":"Southern Asia"},"Indonesia":{"cur":"روبية إندونيسية","lang":"الإندونيسية","area":1904569,"reg":"Asia","sub":"South-Eastern Asia"},"Iran":{"cur":"ريال إيراني","lang":"الفارسية","area":1648195,"reg":"Asia","sub":"Southern Asia"},"Iraq":{"cur":"دينار عراقي","lang":"العربية، الآرامية","area":438317,"reg":"Asia","sub":"Western Asia"},"Ireland":{"cur":"يورو","lang":"الإنجليزية، الأيرلندية","area":70273,"reg":"Europe","sub":"Northern Europe"},"Italy":{"cur":"يورو","lang":"الإيطالية","area":301336,"reg":"Europe","sub":"Southern Europe"},"Ivory Coast":{"cur":"فرنك غرب أفريقي","lang":"الفرنسية","area":322463,"reg":"Africa","sub":"Western Africa"},"Jamaica":{"cur":"دولار جامايكي","lang":"الإنجليزية، Jamaican Patois","area":10991,"reg":"Americas","sub":"Caribbean"},"Japan":{"cur":"ين ياباني","lang":"اليابانية","area":377930,"reg":"Asia","sub":"Eastern Asia"},"Kazakhstan":{"cur":"تينغ كازاخستاني","lang":"الكازاخستانية، الروسية","area":2724900,"reg":"Asia","sub":"Central Asia"},"Jordan":{"cur":"دينار أردني","lang":"العربية","area":89342,"reg":"Asia","sub":"Western Asia"},"Kenya":{"cur":"شلن كينيي","lang":"الإنجليزية، السواحلية","area":580367,"reg":"Africa","sub":"Eastern Africa"},"North Korea":{"cur":"وون كوريا الشمالية","lang":"الكورية","area":120538,"reg":"Asia","sub":"Eastern Asia"},"South Korea":{"cur":"وون كوريا الجنوبية","lang":"الكورية","area":100210,"reg":"Asia","sub":"Eastern Asia"},"Kuwait":{"cur":"دينار كويتي","lang":"العربية","area":17818,"reg":"Asia","sub":"Western Asia"},"Kyrgyzstan":{"cur":"سوم قيرغستاني","lang":"القيرغيزية، الروسية","area":199951,"reg":"Asia","sub":"Central Asia"},"Laos":{"cur":"كيب لاوسي","lang":"اللاوية","area":236800,"reg":"Asia","sub":"South-Eastern Asia"},"Lebanon":{"cur":"جنيه لبناني","lang":"العربية، الفرنسية","area":10452,"reg":"Asia","sub":"Western Asia"},"Lesotho":{"cur":"لوتي ليسوتو","lang":"الإنجليزية، السوتو الجنوبية","area":30355,"reg":"Africa","sub":"Southern Africa"},"Latvia":{"cur":"يورو","lang":"اللاتفية","area":64559,"reg":"Europe","sub":"Northern Europe"},"Liberia":{"cur":"دولار ليبيري","lang":"الإنجليزية","area":111369,"reg":"Africa","sub":"Western Africa"},"Libya":{"cur":"دينار ليبي","lang":"العربية","area":1759540,"reg":"Africa","sub":"Northern Africa"},"Liechtenstein":{"cur":"فرنك سويسري","lang":"الألمانية","area":160,"reg":"Europe","sub":"Western Europe"},"Lithuania":{"cur":"يورو","lang":"الليتوانية","area":65300,"reg":"Europe","sub":"Northern Europe"},"Luxembourg":{"cur":"يورو","lang":"الألمانية، الفرنسية","area":2586,"reg":"Europe","sub":"Western Europe"},"Madagascar":{"cur":"أرياري مدغشقر","lang":"الفرنسية، الملغاشي","area":587041,"reg":"Africa","sub":"Eastern Africa"},"Malawi":{"cur":"كواشا مالاوي","lang":"الإنجليزية، النيانجا","area":118484,"reg":"Africa","sub":"Eastern Africa"},"Malaysia":{"cur":"رينغيت ماليزي","lang":"الإنجليزية، الماليزية","area":330803,"reg":"Asia","sub":"South-Eastern Asia"},"Maldives":{"cur":"روفيه جزر المالديف","lang":"المالديفية","area":300,"reg":"Asia","sub":"Southern Asia"},"Mali":{"cur":"فرنك غرب أفريقي","lang":"الفرنسية","area":1240192,"reg":"Africa","sub":"Western Africa"},"Malta":{"cur":"يورو","lang":"الإنجليزية، المالطية","area":316,"reg":"Europe","sub":"Southern Europe"},"Mauritania":{"cur":"أوقية موريتانية","lang":"العربية","area":1030700,"reg":"Africa","sub":"Western Africa"},"Mauritius":{"cur":"روبية موريشيوسية","lang":"الإنجليزية، الفرنسية","area":2040,"reg":"Africa","sub":"Eastern Africa"},"Mexico":{"cur":"بيزو مكسيكي","lang":"الإسبانية","area":1964375,"reg":"Americas","sub":"North America"},"Monaco":{"cur":"يورو","lang":"الفرنسية","area":2,"reg":"Europe","sub":"Western Europe"},"Mongolia":{"cur":"توغروغ منغولي","lang":"المنغولية","area":1564110,"reg":"Asia","sub":"Eastern Asia"},"Moldova":{"cur":"ليو مولدوفي","lang":"الرومانية","area":33846,"reg":"Europe","sub":"Eastern Europe"},"Montenegro":{"cur":"يورو","lang":"الصربية (الجبل الأسود)","area":13812,"reg":"Europe","sub":"Southeast Europe"},"Morocco":{"cur":"درهم مغربي","lang":"العربية، Berber","area":446550,"reg":"Africa","sub":"Northern Africa"},"Mozambique":{"cur":"متكال موزمبيقي","lang":"البرتغالية","area":801590,"reg":"Africa","sub":"Eastern Africa"},"Oman":{"cur":"ريال عماني","lang":"العربية","area":309500,"reg":"Asia","sub":"Western Asia"},"Namibia":{"cur":"دولار ناميبي","lang":"الأفريقانية، الألمانية","area":825615,"reg":"Africa","sub":"Southern Africa"},"Nauru":{"cur":"دولار أسترالي","lang":"الإنجليزية، النورو","area":21,"reg":"Oceania","sub":"Micronesia"},"Nepal":{"cur":"روبية نيبالي","lang":"النيبالية","area":147181,"reg":"Asia","sub":"Southern Asia"},"Netherlands":{"cur":"يورو","lang":"الهولندية","area":41850,"reg":"Europe","sub":"Western Europe"},"New Caledonia":{"cur":"فرنك سي إف بي","lang":"الفرنسية","area":18575,"reg":"Oceania","sub":"Melanesia"},"Vanuatu":{"cur":"فاتو فانواتو","lang":"البيسلامية، الإنجليزية","area":12189,"reg":"Oceania","sub":"Melanesia"},"New Zealand":{"cur":"دولار نيوزيلندي","lang":"الإنجليزية، الماورية","area":270467,"reg":"Oceania","sub":"Australia and New Zealand"},"Nicaragua":{"cur":"قرطبة نيكاراغوا","lang":"الإسبانية","area":130373,"reg":"Americas","sub":"Central America"},"Niger":{"cur":"فرنك غرب أفريقي","lang":"الفرنسية","area":1267000,"reg":"Africa","sub":"Western Africa"},"Nigeria":{"cur":"نايرا نيجيري","lang":"الإنجليزية","area":923768,"reg":"Africa","sub":"Western Africa"},"Norway":{"cur":"كرونة نرويجية","lang":"النرويجية نينورسك، النرويجية بوكمال","area":323802,"reg":"Europe","sub":"Northern Europe"},"Micronesia":{"cur":"","lang":"الإنجليزية","area":702,"reg":"Oceania","sub":"Micronesia"},"Marshall Islands":{"cur":"دولار أمريكي","lang":"الإنجليزية، المارشالية","area":181,"reg":"Oceania","sub":"Micronesia"},"Palau":{"cur":"دولار أمريكي","lang":"الإنجليزية، البالوان","area":459,"reg":"Oceania","sub":"Micronesia"},"Pakistan":{"cur":"روبية باكستاني","lang":"الإنجليزية، الأوردية","area":881912,"reg":"Asia","sub":"Southern Asia"},"Panama":{"cur":"بالبوا بنمي","lang":"الإسبانية","area":75417,"reg":"Americas","sub":"Central America"},"Papua New Guinea":{"cur":"كينا بابوا غينيا الجديدة","lang":"الإنجليزية، الهيري موتو","area":462840,"reg":"Oceania","sub":"Melanesia"},"Paraguay":{"cur":"غواراني باراغواي","lang":"الغوارانية، الإسبانية","area":406752,"reg":"Americas","sub":"South America"},"Peru":{"cur":"سول بيروفي","lang":"الأيمارا، كيشوا","area":1285216,"reg":"Americas","sub":"South America"},"Philippines":{"cur":"بيزو فلبيني","lang":"الإنجليزية، الفلبينية","area":342353,"reg":"Asia","sub":"South-Eastern Asia"},"Poland":{"cur":"زلوتي بولندي","lang":"البولندية","area":312679,"reg":"Europe","sub":"Central Europe"},"Portugal":{"cur":"يورو","lang":"البرتغالية","area":92090,"reg":"Europe","sub":"Southern Europe"},"Guinea-Bissau":{"cur":"فرنك غرب أفريقي","lang":"البرتغالية، Upper Guinea Creole","area":36125,"reg":"Africa","sub":"Western Africa"},"Timor-Leste":{"cur":"دولار أمريكي","lang":"البرتغالية، التيتم","area":14874,"reg":"Asia","sub":"South-Eastern Asia"},"Puerto Rico":{"cur":"دولار أمريكي","lang":"الإنجليزية، الإسبانية","area":8870,"reg":"Americas","sub":"Caribbean"},"Qatar":{"cur":"ريال قطري","lang":"العربية","area":11586,"reg":"Asia","sub":"Western Asia"},"Romania":{"cur":"ليو روماني","lang":"الرومانية","area":238391,"reg":"Europe","sub":"Southeast Europe"},"Russia":{"cur":"روبل روسي","lang":"الروسية","area":17098242,"reg":"Europe","sub":"Eastern Europe"},"Rwanda":{"cur":"فرنك رواندي","lang":"الإنجليزية، الفرنسية","area":26338,"reg":"Africa","sub":"Eastern Africa"},"Saint Kitts and Nevis":{"cur":"دولار شرق الكاريبي","lang":"الإنجليزية","area":261,"reg":"Americas","sub":"Caribbean"},"Saint Lucia":{"cur":"دولار شرق الكاريبي","lang":"الإنجليزية","area":616,"reg":"Americas","sub":"Caribbean"},"Saint Vincent and the Grenadines":{"cur":"دولار شرق الكاريبي","lang":"الإنجليزية","area":389,"reg":"Americas","sub":"Caribbean"},"San Marino":{"cur":"يورو","lang":"الإيطالية","area":61,"reg":"Europe","sub":"Southern Europe"},"São Tomé and Príncipe":{"cur":"دوبرا ساو تومي وبرينسيبي","lang":"البرتغالية","area":964,"reg":"Africa","sub":"Middle Africa"},"Saudi Arabia":{"cur":"ريال سعودي","lang":"العربية","area":2149690,"reg":"Asia","sub":"Western Asia"},"Senegal":{"cur":"فرنك غرب أفريقي","lang":"الفرنسية","area":196722,"reg":"Africa","sub":"Western Africa"},"Serbia":{"cur":"دينار صربي","lang":"الصربية","area":88361,"reg":"Europe","sub":"Southeast Europe"},"Seychelles":{"cur":"روبية سيشيلية","lang":"الفرنسية الكريولية السيشيلية، الإنجليزية","area":452,"reg":"Africa","sub":"Eastern Africa"},"Sierra Leone":{"cur":"ليون سيراليوني - 1964-2022","lang":"الإنجليزية","area":71740,"reg":"Africa","sub":"Western Africa"},"Singapore":{"cur":"دولار سنغافوري","lang":"الإنجليزية، الماليزية","area":710,"reg":"Asia","sub":"South-Eastern Asia"},"Slovakia":{"cur":"يورو","lang":"السلوفاكية","area":49037,"reg":"Europe","sub":"Central Europe"},"Vietnam":{"cur":"دونج فيتنامي","lang":"الفيتنامية","area":331212,"reg":"Asia","sub":"South-Eastern Asia"},"Slovenia":{"cur":"يورو","lang":"السلوفانية","area":20273,"reg":"Europe","sub":"Central Europe"},"Somalia":{"cur":"شلن صومالي","lang":"العربية، الصومالية","area":637657,"reg":"Africa","sub":"Eastern Africa"},"South Africa":{"cur":"راند جنوب أفريقيا","lang":"الأفريقانية، الإنجليزية","area":1221037,"reg":"Africa","sub":"Southern Africa"},"Zimbabwe":{"cur":"بولا بتسواني","lang":"Chibarwe، الإنجليزية","area":390757,"reg":"Africa","sub":"Eastern Africa"},"Spain":{"cur":"يورو","lang":"الإسبانية","area":505992,"reg":"Europe","sub":"Southern Europe"},"South Sudan":{"cur":"جنيه جنوب السودان","lang":"الإنجليزية","area":619745,"reg":"Africa","sub":"Middle Africa"},"Sudan":{"cur":"جنيه سوداني","lang":"العربية، الإنجليزية","area":1886068,"reg":"Africa","sub":"Northern Africa"},"Suriname":{"cur":"دولار سورينامي","lang":"الهولندية","area":163820,"reg":"Americas","sub":"South America"},"Eswatini":{"cur":"ليلانجيني سوازيلندي","lang":"الإنجليزية، السواتي","area":17364,"reg":"Africa","sub":"Southern Africa"},"Sweden":{"cur":"كرونة سويدية","lang":"السويدية","area":450295,"reg":"Europe","sub":"Northern Europe"},"Switzerland":{"cur":"فرنك سويسري","lang":"الفرنسية، الألمانية السويسرية","area":41284,"reg":"Europe","sub":"Western Europe"},"Syria":{"cur":"ليرة سورية","lang":"العربية","area":185180,"reg":"Asia","sub":"Western Asia"},"Tajikistan":{"cur":"سوموني طاجيكستاني","lang":"الروسية، الطاجيكية","area":143100,"reg":"Asia","sub":"Central Asia"},"Thailand":{"cur":"باخت تايلاندي","lang":"التايلاندية","area":513120,"reg":"Asia","sub":"South-Eastern Asia"},"Togo":{"cur":"فرنك غرب أفريقي","lang":"الفرنسية","area":56785,"reg":"Africa","sub":"Western Africa"},"Tonga":{"cur":"بانغا تونغا","lang":"الإنجليزية، التونغية","area":747,"reg":"Oceania","sub":"Polynesia"},"Trinidad and Tobago":{"cur":"دولار ترينداد وتوباغو","lang":"الإنجليزية","area":5130,"reg":"Americas","sub":"Caribbean"},"UAE":{"cur":"درهم إماراتي","lang":"العربية","area":83600,"reg":"Asia","sub":"Western Asia"},"Tunisia":{"cur":"دينار تونسي","lang":"العربية","area":163610,"reg":"Africa","sub":"Northern Africa"},"Turkey":{"cur":"ليرة تركية","lang":"التركية","area":783562,"reg":"Asia","sub":"Western Asia"},"Turkmenistan":{"cur":"مانات تركمانستان","lang":"الروسية، التركمانية","area":488100,"reg":"Asia","sub":"Central Asia"},"Tuvalu":{"cur":"دولار أسترالي","lang":"الإنجليزية، التوفالو","area":26,"reg":"Oceania","sub":"Polynesia"},"Uganda":{"cur":"شلن أوغندي","lang":"الإنجليزية، السواحلية","area":241550,"reg":"Africa","sub":"Eastern Africa"},"Ukraine":{"cur":"هريفنيا أوكراني","lang":"الأوكرانية","area":603500,"reg":"Europe","sub":"Eastern Europe"},"North Macedonia":{"cur":"دينار مقدوني","lang":"المقدونية","area":25713,"reg":"Europe","sub":"Southeast Europe"},"Egypt":{"cur":"جنيه مصري","lang":"العربية","area":1002450,"reg":"Africa","sub":"Northern Africa"},"United Kingdom":{"cur":"جنيه إسترليني","lang":"الإنجليزية","area":242900,"reg":"Europe","sub":"Northern Europe"},"Tanzania":{"cur":"شلن تنزاني","lang":"الإنجليزية، السواحلية","area":945087,"reg":"Africa","sub":"Eastern Africa"},"United States":{"cur":"دولار أمريكي","lang":"الإنجليزية","area":9372610,"reg":"Americas","sub":"North America"},"Burkina Faso":{"cur":"فرنك غرب أفريقي","lang":"الفرنسية","area":272967,"reg":"Africa","sub":"Western Africa"},"Uruguay":{"cur":"بيزو اوروغواي","lang":"الإسبانية","area":181034,"reg":"Americas","sub":"South America"},"Uzbekistan":{"cur":"سوم أوزبكستاني","lang":"الروسية، الأوزبكية","area":447400,"reg":"Asia","sub":"Central Asia"},"Venezuela":{"cur":"بوليفار فنزويلي","lang":"الإسبانية","area":916445,"reg":"Americas","sub":"South America"},"Samoa":{"cur":"تالا ساموا","lang":"الإنجليزية، الساموائية","area":2842,"reg":"Oceania","sub":"Polynesia"},"Yemen":{"cur":"ريال يمني","lang":"العربية","area":527968,"reg":"Asia","sub":"Western Asia"},"Zambia":{"cur":"كواشا زامبي","lang":"الإنجليزية","area":752612,"reg":"Africa","sub":"Eastern Africa"},"Argentina":{"cur":"بيزو أرجنتيني","lang":"الغوارانية، الإسبانية","area":2780400,"reg":"Americas","sub":"South America"},"Bahamas":{"cur":"دولار باهامي","lang":"الإنجليزية","area":13943,"reg":"Americas","sub":"Caribbean"},"Brazil":{"cur":"ريال برازيلي","lang":"البرتغالية","area":8515767,"reg":"Americas","sub":"South America"},"Bolivia":{"cur":"بوليفيانو بوليفي","lang":"الأيمارا، الغوارانية","area":1098581,"reg":"Americas","sub":"South America"},"Belize":{"cur":"دولار بليزي","lang":"Belizean Creole، الإنجليزية","area":22966,"reg":"Americas","sub":"Central America"},"Botswana":{"cur":"بولا بتسواني","lang":"الإنجليزية، التسوانية","area":582000,"reg":"Africa","sub":"Southern Africa"},"Angola":{"cur":"كوانزا أنغولي","lang":"البرتغالية","area":1246700,"reg":"Africa","sub":"Middle Africa"},"Algeria":{"cur":"دينار جزائري","lang":"العربية","area":2381741,"reg":"Africa","sub":"Northern Africa"},"Bangladesh":{"cur":"تاكا بنغلاديشي","lang":"البنغالية","area":147570,"reg":"Asia","sub":"Southern Asia"},"Bhutan":{"cur":"نولتوم بوتاني","lang":"دزونكا","area":38394,"reg":"Asia","sub":"Southern Asia"},"Afghanistan":{"cur":"أفغاني","lang":"الدارية، البشتو","area":652230,"reg":"Asia","sub":"Southern Asia"},"Armenia":{"cur":"درام أرميني","lang":"الأرمنية","area":29743,"reg":"Asia","sub":"Western Asia"},"Austria":{"cur":"يورو","lang":"Austro-Bavarian German","area":83871,"reg":"Europe","sub":"Central Europe"},"Albania":{"cur":"ليك ألباني","lang":"الألبانية","area":28748,"reg":"Europe","sub":"Southeast Europe"},"Belgium":{"cur":"يورو","lang":"الألمانية، الفرنسية","area":30528,"reg":"Europe","sub":"Western Europe"},"Solomon Islands":{"cur":"دولار جزر سليمان","lang":"الإنجليزية","area":28896,"reg":"Oceania","sub":"Melanesia"},"Australia":{"cur":"دولار أسترالي","lang":"الإنجليزية","area":7692024,"reg":"Oceania","sub":"Australia and New Zealand"},"Azerbaijan":{"cur":"مانات أذربيجان","lang":"الأذربيجانية، الروسية","area":86600,"reg":"Asia","sub":"Western Asia"},"Brunei":{"cur":"دولار بروناي","lang":"الماليزية","area":5765,"reg":"Asia","sub":"South-Eastern Asia"},"Antarctica":{"cur":"","lang":"","area":14000000,"reg":"Antarctic","sub":""},"Bosnia and Herzegovina":{"cur":"مارك البوسنة والهرسك قابل للتحويل","lang":"البوسنية، الكرواتية","area":51209,"reg":"Europe","sub":"Southeast Europe"},"Kosovo":{"cur":"يورو","lang":"الألبانية، الصربية","area":10908,"reg":"Europe","sub":"Southeast Europe"},"Andorra":{"cur":"يورو","lang":"الكتالانية","area":468,"reg":"Europe","sub":"Southern Europe"},"Antigua and Barbuda":{"cur":"دولار شرق الكاريبي","lang":"الإنجليزية","area":442,"reg":"Americas","sub":"Caribbean"},"Bahrain":{"cur":"دينار بحريني","lang":"العربية","area":765,"reg":"Asia","sub":"Western Asia"},"Barbados":{"cur":"دولار بربادوسي","lang":"الإنجليزية","area":430,"reg":"Americas","sub":"Caribbean"}};
+const ARAB = ["Saudi Arabia","UAE","Qatar","Kuwait","Bahrain","Oman","Yemen","Jordan","Syria","Lebanon","Iraq","Palestine","Egypt","Libya","Tunisia","Algeria","Morocco","Mauritania","Sudan","Somalia","Djibouti","Comoros"];
+const EASY = ["Saudi Arabia","UAE","Qatar","Kuwait","Bahrain","Oman","Yemen","Jordan","Syria","Lebanon","Iraq","Palestine","Egypt","Libya","Tunisia","Algeria","Morocco","Sudan","Turkey","Iran","Pakistan","India","China","Japan","South Korea","Indonesia","Malaysia","Thailand","Russia","United Kingdom","France","Germany","Spain","Italy","Portugal","Greece","Netherlands","Switzerland","Sweden","Norway","United States","Canada","Mexico","Brazil","Argentina","Australia","Nigeria","South Africa","Kenya","Ethiopia"];
+const SITE_URL = "https://hayahbh.github.io/geo/";
+
+/* --- daily puzzle and difficulty --- */
+let isDaily = false, dailyOffered = false;
+function seedIndex(str, n){ let h=2166136261; for(const ch of str){ h^=ch.charCodeAt(0); h=Math.imul(h,16777619); } return (h>>>0) % n; }
+function dailyCountry(){ return PLAYABLE[seedIndex('geo-'+todayStr(), PLAYABLE.length)]; }
+function poolFor(d){ if(d==='easy') return COUNTRIES.filter(c=>EASY.includes(c.en)); if(d==='hard') return COUNTRIES; return PLAYABLE; }
+function pickMystery(){
+  PROGRESS.daily = PROGRESS.daily || {};
+  if(!dailyOffered){ dailyOffered = true; if(!PROGRESS.daily[todayStr()]){ isDaily = true; return dailyCountry(); } }
+  isDaily = false;
+  const pool = poolFor(PROGRESS.diff || 'medium'); let m;
+  do{ m = pool[Math.floor(Math.random()*pool.length)]; }while(pool.length>1 && m===mystery);
+  return m;
+}
+function updateModeNote(){
+  modeNote.textContent = isDaily
+    ? "لغز اليوم: نفس الدولة لكل اللاعبين اليوم، فتقدر تتحدى أصحابك. / Today's puzzle: the same country for everyone today."
+    : "لغز حر حسب المستوى اللي اخترته. / A free puzzle at your chosen difficulty.";
+}
+function paintDiff(){ document.querySelectorAll('#diffRow .dbtn').forEach(b=>b.classList.toggle('on', b.dataset.d===(PROGRESS.diff||'medium'))); }
+document.querySelectorAll('#diffRow .dbtn').forEach(b=>b.addEventListener('click',()=>{ PROGRESS.diff=b.dataset.d; saveProgress(); paintDiff(); dailyOffered=true; newRound(); }));
+paintDiff(); updateModeNote();
+
+/* --- after a round: card, share, records --- */
+function markSeen(c){ PROGRESS.seen = PROGRESS.seen || []; if(!PROGRESS.seen.includes(c.en)){ PROGRESS.seen.push(c.en); saveProgress(); } }
+function countryCard(m){
+  const i = INFO[m.en] || {};
+  return `<div class="ccard"><span>العاصمة / Capital: <b>${m.cap||m.capen||''}</b></span>`+
+    (i.cur?`<span>العملة / Currency: <b>${i.cur}</b></span>`:'')+
+    (i.lang?`<span>اللغة / Language: <b>${i.lang}</b></span>`:'')+
+    (i.area?`<span>المساحة / Area: <b>${i.area.toLocaleString('en')} كم²</b></span>`:'')+`</div>`;
+}
+let shareText = '';
+function afterFinish(won, n){
+  const m = mystery;
+  if(isDaily){ PROGRESS.daily = PROGRESS.daily || {}; PROGRESS.daily[todayStr()] = {won, n}; }
+  const h = PROGRESS.history[PROGRESS.history.length-1]; if(h){ h.cont = m.cont; h.daily = isDaily; }
+  if(won){
+    PROGRESS.solvedSet = [...new Set([...(PROGRESS.solvedSet||[]), m.en])];
+    if(n===1) PROGRESS.firstTry = (PROGRESS.firstTry||0)+1;
+    if(!hintsUsed) PROGRESS.noHint = (PROGRESS.noHint||0)+1;
+    playWin();
+  }
+  markSeen(m); saveProgress(); checkAchievements();
+  const tries = n===1 ? 'من أول محاولة' : n===2 ? 'في محاولتين' : (n<=10 ? `في ${n} محاولات` : `في ${n} محاولة`);
+  shareText = `خبير الجغرافيا / Geo Expert\n${isDaily?'لغز اليوم '+todayStr():'لغز حر'}\n` +
+    (won ? `حليتها ${tries}${hintsUsed?'':' بدون تلميح'}` : 'ما قدرت عليها، جرّبها أنت') + `\n${SITE_URL}`;
+  const box = won ? winBanner : giveupBox;
+  box.insertAdjacentHTML('beforeend', countryCard(m) + '<button type="button" class="ghost share-btn">انسخ النتيجة وشاركها / Copy and share result</button>');
+  focusCountry(m);
+}
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.share-btn')) return;
+  const done = ()=>showToast('انسخت النتيجة، الصقها في المحادثة / Result copied');
+  const fallback = ()=>{ const t=document.createElement('textarea'); t.value=shareText; t.style.position='fixed'; t.style.opacity='0'; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); done(); }catch(err){ showToast('ما قدرت أنسخ تلقائيًا'); } t.remove(); };
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(shareText).then(done, fallback); else fallback();
+});
+
+/* --- achievements --- */
+const ACH = [
+  {id:'first',  t:'أول لغز / First solve',               ok:p=>p.totalSolved>=1},
+  {id:'ten',    t:'10 ألغاز / 10 solves',                 ok:p=>p.totalSolved>=10},
+  {id:'fifty',  t:'50 لغز / 50 solves',                   ok:p=>p.totalSolved>=50},
+  {id:'onetry', t:'من أول محاولة / First-try solve',      ok:p=>(p.firstTry||0)>=1},
+  {id:'nohint', t:'10 ألغاز بدون تلميح / 10 without hints', ok:p=>(p.noHint||0)>=10},
+  {id:'st3',    t:'سلسلة 3 أيام / 3-day streak',          ok:p=>(p.bestStreak||0)>=3},
+  {id:'st7',    t:'سلسلة 7 أيام / 7-day streak',          ok:p=>(p.bestStreak||0)>=7},
+  {id:'arab10', t:'10 دول عربية / 10 Arab countries',     ok:p=>(p.solvedSet||[]).filter(e=>ARAB.includes(e)).length>=10},
+  {id:'ex25',   t:'مستكشف: 25 دولة / Explorer: 25',       ok:p=>(p.seen||[]).length>=25},
+  {id:'ex100',  t:'رحّالة: 100 دولة / Traveller: 100',    ok:p=>(p.seen||[]).length>=100},
+  {id:'fast10', t:'10 إجابات في دقيقة / 10 in a minute',  ok:p=>Math.max(0,...Object.values(p.best60||{}))>=10},
+];
+function checkAchievements(){
+  PROGRESS.ach = PROGRESS.ach || {}; const got = [];
+  ACH.forEach(a=>{ if(!PROGRESS.ach[a.id] && a.ok(PROGRESS)){ PROGRESS.ach[a.id] = todayStr(); got.push(a); } });
+  if(got.length){ saveProgress(); setTimeout(()=>showToast('وسام جديد: '+got[0].t), 900); }
+}
+function renderExtras(){
+  const el = document.getElementById('extraStats'); if(!el) return;
+  const seen = (PROGRESS.seen||[]).length, total = COUNTRIES.length;
+  const by = {};
+  (PROGRESS.history||[]).filter(h=>h.type==='country' && h.cont).forEach(h=>{ const v = h.result==='gaveup' ? h.guesses+5 : h.guesses; (by[h.cont]=by[h.cont]||[]).push(v); });
+  let hard = null; Object.entries(by).forEach(([k,v])=>{ if(v.length<2) return; const avg=v.reduce((a,b)=>a+b,0)/v.length; if(!hard||avg>hard.avg) hard={k,avg}; });
+  PROGRESS.ach = PROGRESS.ach || {};
+  el.innerHTML = `<h3 style="margin-top:0">اكتشافاتك / Discoveries</h3>
+    <div class="ex-line">اكتشفت <b>${seen}</b> من ${total} دولة / countries discovered</div>
+    <div class="ex-line">${hard ? `أصعب قارة عليك: <b>${hard.k}</b> (متوسط ${hard.avg.toFixed(1)} محاولات)` : 'العب أكثر عشان نعرف أصعب قارة عليك / Play more to find your hardest continent'}</div>
+    <h3>الأوسمة / Achievements</h3>
+    <div class="ach-list">${ACH.map(a=>`<span class="${PROGRESS.ach[a.id]?'got':''}">${a.t}</span>`).join('')}</div>`;
+}
+
+/* --- sound --- */
+let soundOn = true; try{ soundOn = localStorage.getItem('geoSound') !== 'off'; }catch(e){}
+let AC = null;
+function playWin(){
+  if(!soundOn) return;
+  try{
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    const t = AC.currentTime;
+    [523.25,659.25,783.99].forEach((f,i)=>{ const o=AC.createOscillator(), g=AC.createGain(); o.type='sine'; o.frequency.value=f;
+      g.gain.setValueAtTime(0,t+i*.09); g.gain.linearRampToValueAtTime(.16,t+i*.09+.02); g.gain.exponentialRampToValueAtTime(.001,t+i*.09+.55);
+      o.connect(g); g.connect(AC.destination); o.start(t+i*.09); o.stop(t+i*.09+.6); });
+  }catch(e){}
+}
+(function(){
+  const b = document.getElementById('soundBtn');
+  const ON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+  const OFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>';
+  const paint = ()=>{ b.innerHTML = soundOn ? ON : OFF; b.setAttribute('aria-label', soundOn ? 'إيقاف الصوت' : 'تشغيل الصوت'); };
+  b.addEventListener('click', ()=>{ soundOn = !soundOn; try{ localStorage.setItem('geoSound', soundOn?'on':'off'); }catch(e){} paint(); if(soundOn) playWin(); });
+  paint();
+})();
+
+/* --- turn the globe to what you just guessed --- */
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function glide(get, set, target, done){
+  const start = get(), t0 = performance.now(), dur = reduceMotion ? 1 : 700;
+  const dl = ((target.lon - start.lon + 540) % 360) - 180;
+  function step(now){
+    const k = Math.min(1,(now-t0)/dur), e = 1-Math.pow(1-k,3);
+    set({lon:start.lon+dl*e, lat:start.lat+(target.lat-start.lat)*e, zoom:start.zoom+(target.zoom-start.zoom)*e});
+    if(k<1) requestAnimationFrame(step); else if(done) done();
+  }
+  requestAnimationFrame(step);
+}
+function focusCountry(c){
+  const small = (INFO[c.en]&&INFO[c.en].area||1e6) < 60000;
+  velLambda = 0; velPhi = 0;
+  glide(()=>({lon:lambda0,lat:phi0,zoom}), v=>{ lambda0=v.lon; phi0=v.lat; zoom=v.zoom; markDirty(); },
+    {lon:c.lon, lat:Math.max(-70,Math.min(70,c.lat)), zoom: small ? Math.max(zoom,2.6) : zoom});
+}
+function focusCity(c){
+  velLambdaC = 0; velPhiC = 0;
+  glide(()=>({lon:lambda0C,lat:phi0C,zoom:zoomC}), v=>{ lambda0C=v.lon; phi0C=v.lat; zoomC=v.zoom; markDirtyC(); },
+    {lon:c.lon, lat:Math.max(-70,Math.min(70,c.lat)), zoom:zoomC});
+}
+
+/* --- challenges: capital, country, shape; untimed or one minute --- */
+const CH = {mode:'cap2c', time:0, score:0, item:null, left:0, timer:null, running:false};
+const chEls = {prompt:document.getElementById('chPrompt'), input:document.getElementById('chInput'), fb:document.getElementById('chFeedback'),
+  score:document.getElementById('chScore'), timer:document.getElementById('chTimer'), best:document.getElementById('chBest'), shape:document.getElementById('chShape')};
+const chPool = ()=> CH.mode==='shape' ? PLAYABLE.filter(c=>COUNTRY_SHAPES[c.en]) : PLAYABLE;
+function chMatch(v, names){
+  const q = normName(v); if(!q) return false;
+  return names.map(normName).some(k=> k===q || (q.length>=3 && editDist(q,k) <= (k.length<=4?1:k.length<=8?2:3)));
+}
+function drawShape(c){
+  const cv = chEls.shape, g = cv.getContext('2d'), W2 = cv.width, H2 = cv.height;
+  g.clearRect(0,0,W2,H2);
+  const rings = COUNTRY_SHAPES[c.en]; if(!rings) return;
+  const box = r=>{ let a=1e9,b=-1e9,cc=1e9,d=-1e9; r.forEach(([x,y])=>{a=Math.min(a,x);b=Math.max(b,x);cc=Math.min(cc,y);d=Math.max(d,y);}); return {a,b,c:cc,d,area:(b-a)*(d-cc),cx:(a+b)/2,cy:(cc+d)/2}; };
+  const main = rings.map(box).sort((p,q)=>q.area-p.area)[0];
+  const k = Math.cos(main.cy*D2R);
+  const proj = rings.map(r=>r.map(([lon,lat])=>[(((lon-main.cx+540)%360)-180)*k, -lat]))
+    .filter(r=>{ const b=box(r); return Math.abs(b.cx)<30 && Math.abs(-b.cy-main.cy)<30; });
+  const all = box(proj.flat());
+  const sc = Math.min((W2-30)/(all.b-all.a||1), (H2-30)/(all.d-all.c||1));
+  const ox = (W2-(all.b-all.a)*sc)/2 - all.a*sc, oy = (H2-(all.d-all.c)*sc)/2 - all.c*sc;
+  g.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--num').trim() || '#c9a96e';
+  proj.forEach(r=>{ g.beginPath(); r.forEach(([x,y],i)=> i ? g.lineTo(ox+x*sc, oy+y*sc) : g.moveTo(ox+x*sc, oy+y*sc)); g.closePath(); g.fill(); });
+}
+function chRender(){
+  const m = CH.item;
+  chEls.shape.hidden = CH.mode!=='shape';
+  if(CH.mode==='cap2c') chEls.prompt.innerHTML = `ما الدولة اللي عاصمتها <b>${m.cap}</b>؟<br><span style="font-size:.6em;color:var(--muted)">Which country has the capital ${m.capen}?</span>`;
+  else if(CH.mode==='c2cap') chEls.prompt.innerHTML = `ما عاصمة <b>${m.n}</b>؟<br><span style="font-size:.6em;color:var(--muted)">What is the capital of ${m.en}?</span>`;
+  else { chEls.prompt.innerHTML = `أي دولة هذا شكلها؟<br><span style="font-size:.6em;color:var(--muted)">Which country has this shape?</span>`; drawShape(m); }
+  chEls.score.textContent = `النقاط / Score: ${CH.score}`;
+  PROGRESS.best60 = PROGRESS.best60 || {};
+  chEls.best.textContent = `أفضل نتيجة بدقيقة / Best in a minute: ${PROGRESS.best60[CH.mode]||0}`;
+  chEls.timer.textContent = CH.time ? (CH.running ? CH.left+'s' : '') : '';
+  chEls.input.placeholder = CH.mode==='c2cap' ? 'اكتب اسم العاصمة... / Type the capital...' : 'اكتب اسم الدولة... / Type the country...';
+}
+function chNext(){ const pool = chPool(); let m; do{ m = pool[Math.floor(Math.random()*pool.length)]; }while(pool.length>1 && m===CH.item); CH.item = m; chRender(); }
+function chAnswerText(m){ return CH.mode==='c2cap' ? `${m.cap} / ${m.capen}` : `${m.n} / ${m.en}`; }
+function chSay(t, ok){ chEls.fb.textContent = t; chEls.fb.className = 'ch-feedback '+(ok?'ok':'no'); }
+function chAnswer(){
+  if(CH.time && !CH.running){ chSay('اضغط «ابدأ من جديد» عشان يبدأ الوقت / Press Restart to start the clock', false); return; }
+  const v = chEls.input.value; if(!v.trim()) return;
+  const m = CH.item;
+  const ok = CH.mode==='c2cap' ? chMatch(v,[m.cap,m.capen]) : countryByLabel(v)===m;
+  if(ok){ CH.score++; chSay('صح! / Correct!', true); } else chSay(`الإجابة: ${chAnswerText(m)}`, false);
+  chEls.input.value = ''; markSeen(m); chNext(); chEls.input.focus();
+}
+function chStop(){
+  clearInterval(CH.timer); CH.running = false;
+  PROGRESS.best60 = PROGRESS.best60 || {};
+  if(CH.score > (PROGRESS.best60[CH.mode]||0)){ PROGRESS.best60[CH.mode] = CH.score; saveProgress(); }
+  checkAchievements();
+  chSay(`انتهى الوقت! نتيجتك ${CH.score} / Time's up! You scored ${CH.score}`, true);
+  chRender();
+}
+function chStart(){
+  clearInterval(CH.timer); CH.score = 0; chSay('', true);
+  if(CH.time){ CH.left = CH.time; CH.running = true;
+    CH.timer = setInterval(()=>{ CH.left--; chEls.timer.textContent = CH.left+'s'; if(CH.left<=0) chStop(); }, 1000); }
+  chNext(); chEls.input.focus();
+}
+document.getElementById('chGo').onclick = chAnswer;
+document.getElementById('chSkip').onclick = ()=>{ if(!CH.item) return; chSay(`الإجابة: ${chAnswerText(CH.item)}`, false); chNext(); };
+document.getElementById('chStart').onclick = chStart;
+chEls.input.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); chAnswer(); } });
+document.querySelectorAll('#chModes .dbtn').forEach(b=>b.addEventListener('click',()=>{ document.querySelectorAll('#chModes .dbtn').forEach(x=>x.classList.toggle('on',x===b)); CH.mode=b.dataset.m; clearInterval(CH.timer); CH.running=false; CH.score=0; chSay('',true); chNext(); }));
+document.querySelectorAll('#chTimes .dbtn').forEach(b=>b.addEventListener('click',()=>{ document.querySelectorAll('#chTimes .dbtn').forEach(x=>x.classList.toggle('on',x===b)); CH.time=+b.dataset.t; clearInterval(CH.timer); CH.running=false; CH.score=0; chSay(CH.time?'اضغط «ابدأ من جديد» وعندك دقيقة / Press Restart, you have one minute':'',true); chRender(); }));
+
 updateTopStats();
 newRound();
 animate();
-
 
 /* profiles: sign up / switch player */
 (function(){
