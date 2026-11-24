@@ -166,7 +166,7 @@
   h1{font-size:26px;font-weight:800;}
   .head-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
   .theme-btn{display:inline-flex;align-items:center;gap:6px;flex:none;border:1px solid var(--border);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;}
-  .theme-btn svg{width:16px;height:16px;}
+  .theme-btn svg{width:16px;height:16px;background:none;cursor:pointer;}
   .theme-btn:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--accent2);outline-offset:2px;}
   .card{border-radius:18px;}
   .tab-btn{font-family:inherit;}
@@ -186,6 +186,66 @@
   #guessInput,#guessInputC{border-radius:12px;}
   th,td{border-bottom-color:var(--border);}
   @media (prefers-reduced-motion: reduce){ body{transition:none;} }
+
+  /* ---------- quality pass: atmosphere, surfaces, controls, guess rows ---------- */
+  body{
+    background:
+      radial-gradient(1200px 520px at 50% -180px, color-mix(in srgb,var(--accent2) 16%,transparent), transparent 70%),
+      var(--bg);
+    background-attachment:fixed;
+    max-width:980px;margin:0 auto;padding:28px max(16px,env(safe-area-inset-left,0px)) 40px;
+    line-height:1.6;-webkit-font-smoothing:antialiased;
+  }
+  .head-row{margin-bottom:2px;}
+  h1{font-size:clamp(26px,4.4vw,38px);font-weight:800;letter-spacing:0;line-height:1.15;}
+  .sub{font-size:14px;max-width:62ch;margin-bottom:22px;}
+  .tabs{gap:4px;padding:4px;border-radius:999px;background:color-mix(in srgb,var(--ink) 6%,transparent);width:max-content;max-width:100%;margin-bottom:18px;}
+  .tab-btn{border:0;background:transparent;padding:9px 18px;transition:background-color .18s ease-out,color .18s ease-out;}
+  .tab-btn:hover{color:var(--ink);}
+  .tab-btn.active{box-shadow:0 6px 18px -8px color-mix(in srgb,var(--accent) 70%,transparent);}
+  .card{border:0;background:color-mix(in srgb,var(--card) 92%,transparent);border-radius:22px;padding:20px;
+    box-shadow:0 1px 0 color-mix(in srgb,#fff 6%,transparent) inset,0 18px 40px -28px rgba(5,10,25,.55);}
+  .topline{margin-bottom:14px;}
+  .stat b{font-size:clamp(22px,3.4vw,30px);font-weight:800;line-height:1.1;}
+  .stat span{font-size:12px;}
+  .progress-outer{height:6px;}
+  .progress-inner{box-shadow:0 0 12px color-mix(in srgb,var(--accent2) 60%,transparent);}
+  #globeWrap,#globeWrapC{border-radius:26px;padding:22px 10px 14px;box-shadow:inset 0 0 80px rgba(0,0,0,.55);}
+  .globe-hint{font-size:12px;opacity:.85;}
+  .zoom-btn{backdrop-filter:blur(6px);transition:transform .15s ease-out,background-color .15s;}
+  .zoom-btn:hover{transform:scale(1.06);}
+  .zoom-btn:active{transform:scale(.94);}
+  .legend-card{background:transparent!important;box-shadow:none!important;padding:8px 2px 0!important;}
+  .legend-bar{height:6px;}
+  .legend-title{font-size:13px;color:var(--muted);font-weight:700;}
+  .guess-input-row{gap:10px;margin-top:16px;}
+  #guessInput,#guessInputC{min-height:50px;font-size:16px;padding:12px 16px;border:1px solid var(--border);
+    transition:border-color .15s,box-shadow .15s;}
+  #guessInput:focus,#guessInputC:focus{outline:none;border-color:var(--accent2);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent2) 22%,transparent);}
+  button.primary,button.ghost{min-height:50px;border-radius:14px;padding:12px 22px;font-size:15px;
+    transition:transform .15s ease-out,box-shadow .2s ease-out,background-color .2s;}
+  button.primary{box-shadow:0 10px 24px -12px color-mix(in srgb,var(--accent) 80%,transparent);}
+  button.primary:hover:not(:disabled),button.ghost:hover:not(:disabled){transform:translateY(-1px);}
+  button.primary:active:not(:disabled),button.ghost:active:not(:disabled){transform:scale(.97);}
+  button.ghost{border-color:color-mix(in srgb,var(--accent) 45%,transparent);}
+  button.ghost:hover:not(:disabled){background:color-mix(in srgb,var(--accent) 10%,transparent);}
+  .guess-row{position:relative;overflow:hidden;background:color-mix(in srgb,var(--ink) 5%,var(--card))!important;
+    color:var(--ink)!important;border-radius:14px;padding:12px 16px;margin-bottom:8px;font-weight:700;}
+  .guess-row::before{content:"";position:absolute;inset-block:0;inset-inline-start:0;width:var(--p);
+    background:linear-gradient(to left,color-mix(in srgb,var(--h) 34%,transparent),color-mix(in srgb,var(--h) 12%,transparent));pointer-events:none;}
+  .guess-row>*{position:relative;}
+  .guess-row::after{content:"";position:relative;order:-1;width:10px;height:10px;border-radius:50%;flex:none;background:var(--h);
+    box-shadow:0 0 10px var(--h);}
+  .guess-row .gdist{font-variant-numeric:tabular-nums;color:var(--muted);}
+  .guess-row .proximity-label{font-weight:500;color:var(--muted);}
+  .hint-box,.giveup-box,.win-banner{border-radius:16px;padding:14px 18px;}
+  .win-banner{box-shadow:0 18px 40px -24px color-mix(in srgb,var(--accent2) 80%,transparent);}
+  #hoverLabel,#hoverLabelC{background:color-mix(in srgb,#0b1224 92%,transparent);border-color:color-mix(in srgb,var(--accent2) 40%,transparent);backdrop-filter:blur(6px);}
+  .mode-note{font-size:13px;}
+  table td,table th{padding:10px 8px;}
+  @media (max-width:600px){ body{padding-top:18px;} .card{padding:14px;border-radius:18px;} .tabs{width:100%;} .tab-btn{flex:1;padding:8px 6px;} }
+  @media (prefers-reduced-motion: reduce){ *{transition:none!important;} }
+  #globeCanvas,#globeCanvasC{-webkit-mask-image:radial-gradient(closest-side,#000 86%,transparent 100%);mask-image:radial-gradient(closest-side,#000 86%,transparent 100%);}
 </style>
 </head>
 <body>
@@ -363,6 +423,7 @@
 </div>
 
 <footer style="text-align:center;font-size:11px;color:var(--muted);margin:18px 0 6px;">© 2026 هياء بن حسن، جميع الحقوق محفوظة / All rights reserved</footer>
+<script src="https://cdn.jsdelivr.net/npm/animejs@4.4.1/dist/bundles/anime.umd.min.js"></script>
 <script>
 /* ---------------- DATA ---------------- */
 const COUNTRIES = [
@@ -1156,7 +1217,7 @@ function renderGuesses(){
   const sorted = [...guesses].sort((a,b)=> b.score - a.score);
   guessList.innerHTML = sorted.map(g=>{
     const dir = g.score>=100 ? "" : bearingDir(g.country.lat,g.country.lon,mystery.lat,mystery.lon);
-    return `<div class="guess-row" style="background:${heatColor(g.score)}">
+    return `<div class="guess-row" style="--h:${heatColor(g.score)};--p:${Math.max(6,g.score)}%">
       <span class="gflag">${g.country.flag}</span>
       <span class="gname">${g.country.n} / ${g.country.en}</span>
       <span class="proximity-label">${g.score>=100 ? ' صح! / Correct!' : proximityLabel(g.score)}</span>
@@ -1263,7 +1324,7 @@ function renderProgressTab(){
   const maxG = Math.max(1, ...recent.map(h=>h.guesses));
   barsEl.innerHTML = recent.map(h=>{
     const h_ = Math.max(6, (h.guesses/maxG)*100);
-    const color = h.guesses<=3 ? '#2f6b4f' : h.guesses<=6 ? '#c9a13b' : '#b4483d';
+    const color = h.guesses<=3 ? 'var(--num)' : h.guesses<=6 ? 'color-mix(in srgb,var(--num) 60%,transparent)' : 'color-mix(in srgb,var(--danger) 70%,transparent)';
     return `<div title="${h.guesses} guesses, ${h.country}" style="width:18px;height:${h_}%;background:${color};border-radius:3px 3px 0 0;"></div>`;
   }).join('') || '<div class="note">العب أول لغز عشان تشوف السجل / Play a round to see history</div>';
 
@@ -1740,7 +1801,7 @@ function renderGuessesC(){
   const sorted = [...guessesC].sort((a,b)=> b.score - a.score);
   guessListC.innerHTML = sorted.map(g=>{
     const dir = g.score>=100 ? "" : bearingDir(g.city.lat,g.city.lon,mysteryC.lat,mysteryC.lon);
-    return `<div class="guess-row" style="background:${heatColor(g.score)}">
+    return `<div class="guess-row" style="--h:${heatColor(g.score)};--p:${Math.max(6,g.score)}%">
       <span class="gflag">${g.city.flag}</span>
       <span class="gname">${g.city.city} / ${g.city.cityEn}</span>
       <span class="proximity-label">${g.score>=100 ? ' صح! / Correct!' : proximityLabel(g.score)}</span>
@@ -1850,6 +1911,15 @@ animate();
   btn.addEventListener('click',()=>{ root.dataset.theme=isDark()?'light':'dark'; try{localStorage.setItem('geoTheme',root.dataset.theme);}catch(e){} paint(); });
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change',paint);
   paint();
+})();
+
+/* entrance motion (Anime.js v4), content stays visible if the library is missing */
+(function(){
+  if(!window.anime||matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const {animate,stagger}=window.anime;
+  animate('.head-row, .sub, .tabs, #tab-daily > .card',{opacity:[0,1],translateY:[14,0],duration:800,delay:stagger(70),ease:'outExpo'});
+  const pop=el=>new MutationObserver(()=>{ if(el.style.display==='block') animate(el,{opacity:[0,1],scale:[.96,1],duration:600,ease:'outExpo'}); }).observe(el,{attributes:true,attributeFilter:['style']});
+  ['winBanner','winBannerC','giveupBox','giveupBoxC'].forEach(id=>{const el=document.getElementById(id); if(el) pop(el);});
 })();
 </script>
 </body>
