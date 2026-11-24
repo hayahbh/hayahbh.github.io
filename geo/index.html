@@ -1014,7 +1014,7 @@ canvas.addEventListener('pointerup', e=>{
   dragging=false; lastDragTime = performance.now();
   if(activeTouches.size>=2){ velLambda=0; velPhi=0; tapStart=null; return; }
   const p = pointerPos(e);
-  if(tapStart && !tapStart.multi && Math.hypot(p.x-tapStart.x, p.y-tapStart.y) < 6){
+  if(tapStart && !tapStart.multi && Math.hypot(p.x-tapStart.x, p.y-tapStart.y) < 12){
     velLambda=0; velPhi=0;
     const rect = canvas.getBoundingClientRect();
     updateHover(p.x, p.y, e.clientX-rect.left, e.clientY-rect.top);
@@ -1023,7 +1023,7 @@ canvas.addEventListener('pointerup', e=>{
   tapStart=null;
 });
 canvas.addEventListener('pointercancel', e=>{ dragging=false; lastDragTime = performance.now(); });
-canvas.addEventListener('pointerleave', clearHover);
+canvas.addEventListener('pointerleave', e=>{ if(e.pointerType==='mouse') clearHover(); });
 
 /* zoom: wheel, pinch, and +/- buttons */
 function setZoom(z){ zoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, z)); markDirty(); }
@@ -1593,7 +1593,7 @@ canvasC.addEventListener('pointerup', e=>{
   draggingC=false; lastDragTimeC = performance.now();
   if(activeTouchesC.size>=2){ velLambdaC=0; velPhiC=0; tapStartC=null; return; }
   const p = pointerPosC(e);
-  if(tapStartC && !tapStartC.multi && Math.hypot(p.x-tapStartC.x, p.y-tapStartC.y) < 6){
+  if(tapStartC && !tapStartC.multi && Math.hypot(p.x-tapStartC.x, p.y-tapStartC.y) < 12){
     velLambdaC=0; velPhiC=0;
     const rect = canvasC.getBoundingClientRect();
     updateHoverC(p.x, p.y, e.clientX-rect.left, e.clientY-rect.top);
@@ -1602,7 +1602,7 @@ canvasC.addEventListener('pointerup', e=>{
   tapStartC=null;
 });
 canvasC.addEventListener('pointercancel', e=>{ draggingC=false; lastDragTimeC = performance.now(); });
-canvasC.addEventListener('pointerleave', clearHoverC);
+canvasC.addEventListener('pointerleave', e=>{ if(e.pointerType==='mouse') clearHoverC(); });
 
 function setZoomC(z){ zoomC = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, z)); markDirtyC(); }
 canvasC.addEventListener('wheel', e=>{
