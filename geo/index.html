@@ -190,8 +190,8 @@
 </head>
 <body>
 
-<div class="head-row"><h1> خبير الجغرافيا — Geo Expert</h1><button class="theme-btn" id="themeBtn" type="button"></button></div>
-<div class="sub">خمّن الدولة أو المدينة الغامضة بكتابة اسمها — كل تخمين يلوّن الكرة الأرضية حسب قربه من الجواب. اختر تبويب "الدول" أو "المدن" فوق. / Guess the mystery country or city by typing its name — each guess lights up the globe based on how close it is. Pick the "Countries" or "Cities" tab above.</div>
+<div class="head-row"><h1> خبير الجغرافيا / Geo Expert</h1><button class="theme-btn" id="themeBtn" type="button"></button></div>
+<div class="sub">خمّن الدولة أو المدينة الغامضة بكتابة اسمها، كل تخمين يلوّن الكرة الأرضية حسب قربه من الجواب. اختر تبويب "الدول" أو "المدن" فوق. / Guess the mystery country or city by typing its name, each guess lights up the globe based on how close it is. Pick the "Countries" or "Cities" tab above.</div>
 
 <div class="tabs">
   <button class="tab-btn active" data-tab="daily"> الدول / Countries</button>
@@ -228,9 +228,9 @@
       <div class="legend-bar"></div>
       <div class="legend-labels">
         <span> قريب جدًا<br>Very close<br>&lt;250 كم/km</span>
-        <span> قريب<br>Close<br>250–800 كم/km</span>
-        <span> متوسط<br>Medium<br>800–1600 كم/km</span>
-        <span> بعيد<br>Far<br>1600–3500 كم/km</span>
+        <span> قريب<br>Close<br>250 إلى 800 كم/km</span>
+        <span> متوسط<br>Medium<br>800 إلى 1600 كم/km</span>
+        <span> بعيد<br>Far<br>1600 إلى 3500 كم/km</span>
         <span> بعيد جدًا<br>Very far<br>3500+ كم/km</span>
       </div>
       <div class="note">كل ما صار اللون أحمر أكثر، صرت أقرب من الدولة الصح. الدولة الذهبية  هي الجواب الصحيح بعد ما تحله. / The redder the color, the closer you are to the answer. The gold country is the correct answer once solved.</div>
@@ -248,7 +248,7 @@
     </div>
     <div class="hint-box" id="hintBox"></div>
     <div class="giveup-box" id="giveupBox"></div>
-    <div class="mode-note" id="modeNote">لغز اليوم — يتجدد كل يوم تلقائيًا. / Today's puzzle — refreshes automatically every day.</div>
+    <div class="mode-note" id="modeNote">لغز اليوم، يتجدد كل يوم تلقائيًا. / Today's puzzle, refreshes automatically every day.</div>
 
     <div id="guessList"></div>
   </div>
@@ -278,7 +278,7 @@
       <option value="South America"> أمريكا الجنوبية / South America</option>
       <option value="Oceania"> أوقيانوسيا / Oceania</option>
     </select>
-    <span class="note" style="margin:0;">اختر قارة عشان تلعب بمدنها بس — الباقي يبين خافت على الكرة. / Pick a continent to play only its cities — the rest show dimmed on the globe.</span>
+    <span class="note" style="margin:0;">اختر قارة عشان تلعب بمدنها بس، الباقي يبين خافت على الكرة. / Pick a continent to play only its cities, the rest show dimmed on the globe.</span>
   </div>
 
   <div class="card">
@@ -289,7 +289,7 @@
       </div>
       <canvas id="globeCanvasC" width="520" height="520" aria-label="كرة أرضية تفاعلية لتخمين المدن / Interactive globe for guessing cities"></canvas>
       <div id="hoverLabelC"></div>
-      <div class="globe-hint"> اسحب لتدوير الكرة، ولف عجلة الماوس أو قرّص للتكبير — كل نقطة عاصمة دولة / Drag to rotate, scroll or pinch to zoom — each dot is a capital city</div>
+      <div class="globe-hint"> اسحب لتدوير الكرة، ولف عجلة الماوس أو قرّص للتكبير، كل نقطة عاصمة دولة / Drag to rotate, scroll or pinch to zoom, each dot is a capital city</div>
     </div>
 
     <div class="card legend-card" style="margin-top:10px;padding:12px 16px;">
@@ -297,9 +297,9 @@
       <div class="legend-bar"></div>
       <div class="legend-labels">
         <span> قريب جدًا<br>Very close<br>&lt;250 كم/km</span>
-        <span> قريب<br>Close<br>250–800 كم/km</span>
-        <span> متوسط<br>Medium<br>800–1600 كم/km</span>
-        <span> بعيد<br>Far<br>1600–3500 كم/km</span>
+        <span> قريب<br>Close<br>250 إلى 800 كم/km</span>
+        <span> متوسط<br>Medium<br>800 إلى 1600 كم/km</span>
+        <span> بعيد<br>Far<br>1600 إلى 3500 كم/km</span>
         <span> بعيد جدًا<br>Very far<br>3500+ كم/km</span>
       </div>
       <div class="note">النقاط البيضاء = مدن لسا ما خمّنتها. كل ما صار اللون أحمر أكثر، صرت أقرب من المدينة الصح. / White dots are cities you haven't guessed yet. The redder the color, the closer you are.</div>
@@ -317,7 +317,7 @@
     </div>
     <div class="hint-box" id="hintBoxC"></div>
     <div class="giveup-box" id="giveupBoxC"></div>
-    <div class="mode-note" id="modeNoteC">خمّن المدينة الغامضة بكتابة اسمها — المجموعة الحالية مبنية على التقسيم الجغرافي اللي تختاره فوق (كل العالم أو قارة معينة). / Guess the mystery city by typing its name — the current pool is based on the region you picked above (whole world or a single continent).</div>
+    <div class="mode-note" id="modeNoteC">خمّن المدينة الغامضة بكتابة اسمها، المجموعة الحالية مبنية على التقسيم الجغرافي اللي تختاره فوق (كل العالم أو قارة معينة). / Guess the mystery city by typing its name, the current pool is based on the region you picked above (whole world or a single continent).</div>
 
     <div id="guessListC"></div>
   </div>
@@ -335,8 +335,8 @@
           <tr><td>المستوى الحالي / Level</td><td id="pLevel">1</td></tr>
           <tr><td>مجموع الخبرة / Total XP</td><td id="pXP">0</td></tr>
           <tr><td>ألغاز محلولة / Puzzles solved</td><td id="pAttempts">0</td></tr>
-          <tr><td>متوسط عدد التخمينات / Avg. guesses to win</td><td id="pAvg">—</td></tr>
-          <tr><td>أفضل نتيجة (أقل تخمينات) / Best (fewest guesses)</td><td id="pBestGuess">—</td></tr>
+          <tr><td>متوسط عدد التخمينات / Avg. guesses to win</td><td id="pAvg">0</td></tr>
+          <tr><td>أفضل نتيجة (أقل تخمينات) / Best (fewest guesses)</td><td id="pBestGuess">0</td></tr>
           <tr><td>سلسلة الأيام / Current streak</td><td id="pStreak">0 </td></tr>
           <tr><td>أطول سلسلة / Best streak</td><td id="pBestStreak">0</td></tr>
         </table>
@@ -362,7 +362,7 @@
   </div>
 </div>
 
-<footer style="text-align:center;font-size:11px;color:var(--muted);margin:18px 0 6px;">© 2026 هياء بن حسن — جميع الحقوق محفوظة / All rights reserved</footer>
+<footer style="text-align:center;font-size:11px;color:var(--muted);margin:18px 0 6px;">© 2026 هياء بن حسن، جميع الحقوق محفوظة / All rights reserved</footer>
 <script>
 /* ---------------- DATA ---------------- */
 const COUNTRIES = [
@@ -504,7 +504,7 @@ const COUNTRY_FACTS = {
 "Mali": "فيها مدينة تمبكتو التاريخية اللي كانت مركز علم وتجارة. / Home to the historic city of Timbuktu, once a major center of trade and learning.",
 "Niger": "من أشد دول العالم حرارة. / One of the hottest countries on Earth.",
 "Chad": "سُمّيت على بحيرة تشاد اللي كانت من أكبر بحيرات أفريقيا. / Named after Lake Chad, once one of Africa's largest lakes.",
-"Sudan": "فيها أهرامات أكثر من مصر! (أهرامات مروي) / Has more pyramids than Egypt — the pyramids of Meroë.",
+"Sudan": "فيها أهرامات أكثر من مصر! (أهرامات مروي) / Has more pyramids than Egypt, the pyramids of Meroë.",
 "South Sudan": "أحدث دولة مستقلة بالعالم (استقلت 2011). / The world's newest country, gaining independence in 2011.",
 "Ethiopia": "من الدول القليلة اللي ما استعمرت أبدًا، وفيها تقويم خاص بها. / One of the few African nations never colonized, and it uses its own unique calendar.",
 "Somalia": "أطول ساحل بأفريقيا القارية. / Has the longest coastline in mainland Africa.",
@@ -519,7 +519,7 @@ const COUNTRY_FACTS = {
 "Cameroon": "تسمى 'أفريقيا المصغّرة' لتنوع مناخها وتضاريسها. / Nicknamed 'Africa in miniature' for its wide variety of landscapes and climates.",
 "DR Congo": "فيها ثاني أكبر غابة مطيرة استوائية بالعالم. / Home to the world's second-largest rainforest.",
 "Angola": "من أكبر منتجي الألماس والنفط بأفريقيا. / One of Africa's largest producers of both oil and diamonds.",
-"Zambia": "فيها شلالات فيكتوريا (مشترك مع زيمبابوي)، من أكبر الشلالات بالعالم. / Shares Victoria Falls with Zimbabwe — one of the largest waterfalls on Earth.",
+"Zambia": "فيها شلالات فيكتوريا (مشترك مع زيمبابوي), من أكبر الشلالات بالعالم. / Shares Victoria Falls with Zimbabwe, one of the largest waterfalls on Earth.",
 "Zimbabwe": "اسمها مأخوذ من أطلال مدينة حجرية قديمة 'زيمبابوي العظمى'. / Named after the ancient stone ruins of Great Zimbabwe.",
 "Mozambique": "لها ساحل طويل جدًا على المحيط الهندي. / Has one of the longest coastlines in Africa along the Indian Ocean.",
 "Namibia": "فيها صحراء ناميب، من أقدم الصحاري بالعالم. / Home to the Namib Desert, one of the oldest deserts on Earth.",
@@ -553,7 +553,7 @@ const COUNTRY_FACTS = {
 "Kazakhstan": "أكبر دولة بالعالم بدون سواحل بحرية. / The world's largest landlocked country.",
 "Uzbekistan": "واحدة من دولتين فقط بالعالم 'محاطة بدول غير ساحلية بالكامل'. / One of only two 'doubly landlocked' countries in the world.",
 "Vietnam": "فيها خليج هالونغ بآلاف الجزر الصخرية الساحرة. / Home to Ha Long Bay, with thousands of stunning limestone islands.",
-"Thailand": "اسمها يعني 'أرض الأحرار' - ما احتلت استعماريًا أبدًا. / Its name means 'Land of the Free' — never colonized by a European power.",
+"Thailand": "اسمها يعني 'أرض الأحرار' - ما احتلت استعماريًا أبدًا. / Its name means 'Land of the Free', never colonized by a European power.",
 "Myanmar": "فيها آلاف المعابد القديمة بمدينة باغان. / Home to thousands of ancient temples in the city of Bagan.",
 "Malaysia": "فيها أبراج بتروناس، أطول برجين توأم بالعالم لفترة طويلة. / Home to the Petronas Towers, once the tallest twin towers in the world.",
 "Singapore": "من أصغر دول العالم، لكن ميناؤها من أكثر موانئ العالم ازدحامًا. / One of the world's smallest countries, yet home to one of its busiest ports.",
@@ -570,7 +570,7 @@ const COUNTRY_FACTS = {
 "Netherlands": "ربع أراضيها تقريبًا تحت مستوى سطح البحر! / About a quarter of the country lies below sea level.",
 "Belgium": "فيها أكثر من 1500 نوع بيرة، وتعتبر من عواصم الشوكولاتة بالعالم. / Home to over 1,500 beer varieties and considered a chocolate capital of the world.",
 "Sweden": "أول دولة بالعالم تمنع ضرب الأطفال بالقانون (1979). / The first country in the world to ban corporal punishment of children, in 1979.",
-"Norway": "فيها 'شمس منتصف الليل' بالصيف - ما تغرب الشمس أبدًا لأسابيع! / Experiences the 'midnight sun' — weeks where the sun never sets in summer.",
+"Norway": "فيها 'شمس منتصف الليل' بالصيف، ما تغرب الشمس أبدًا لأسابيع! / Experiences the 'midnight sun', weeks where the sun never sets in summer.",
 "Denmark": "علمها من أقدم الأعلام المستخدمة باستمرار بالعالم. / Its flag is one of the oldest continuously used national flags in the world.",
 "Finland": "يقال إن فيها ساونات أكثر من السيارات! / Reportedly has more saunas than cars per capita.",
 "Poland": "فيها أحد أقدم مناجم الملح بالعالم، وتحول لمتحف تحت الأرض. / Home to Wieliczka, one of the world's oldest salt mines, now an underground museum.",
@@ -604,7 +604,7 @@ const COUNTRY_FACTS = {
 "Paraguay": "من دولتين فقط بأمريكا الجنوبية بدون سواحل بحرية. / One of only two landlocked countries in South America.",
 "Australia": "فيها بعض من أكثر الحيوانات فرادة وسمّية بالعالم! / Home to some of the world's most unique and venomous animals.",
 "New Zealand": "من أوائل الأماكن بالعالم اللي تشوف شروق شمس اليوم الجديد بسبب توقيتها. / Among the first places in the world to see each new day, due to its time zone.",
-"Papua New Guinea": "من أكثر دول العالم تنوعًا لغويًا - فيها أكثر من 800 لغة! / The most linguistically diverse country on Earth, with over 800 languages.",
+"Papua New Guinea": "من أكثر دول العالم تنوعًا لغويًا، فيها أكثر من 800 لغة! / The most linguistically diverse country on Earth, with over 800 languages.",
 "Fiji": "تتكون من أكثر من 330 جزيرة! / Made up of more than 330 islands."
 };
 
@@ -814,7 +814,7 @@ function drawGlobe(){
   ctx.fillStyle = glow;
   ctx.fill();
 
-  // sphere shading (ocean) — richer, deeper, with a bright "sun" highlight
+  // sphere shading (ocean), richer, deeper, with a bright "sun" highlight
   const grad = ctx.createRadialGradient(CX-R*0.4, CY-R*0.45, R*0.05, CX, CY, R*1.1);
   grad.addColorStop(0, "#5aa3d8");
   grad.addColorStop(0.35, "#2f74ad");
@@ -910,7 +910,7 @@ function drawGlobe(){
 }
 
 function animate(){
-  // momentum: only spins right after a flick, decays quickly, then rests — you're in control
+  // momentum: only spins right after a flick, decays quickly, then rests, you're in control
   if(!dragging){
     if(Math.abs(velLambda) > 0.002 || Math.abs(velPhi) > 0.002){
       lambda0 += velLambda;
@@ -922,7 +922,7 @@ function animate(){
       velLambda = 0; velPhi = 0;
     }
   }
-  // performance: only actually redraw the canvas when something changed —
+  // performance: only actually redraw the canvas when something changed
   // the globe sits perfectly still (and idle) unless you're moving it
   if(dirty){
     drawGlobe();
@@ -1163,7 +1163,7 @@ function renderGuesses(){
       <span class="gdir">${dir}</span>
       <span class="gdist">${Math.round(g.dist)} km</span>
     </div>`;
-  }).join('') || `<div class="note">لسا ما خمّنت... جرّب أول دولة! / No guesses yet — try your first country!</div>`;
+  }).join('') || `<div class="note">لسا ما خمّنت... جرّب أول دولة! / No guesses yet, try your first country!</div>`;
   document.getElementById('statGuesses').textContent = guesses.length;
 }
 
@@ -1207,8 +1207,8 @@ function submitGuess(){
 
     const fact = COUNTRY_FACTS[mystery.en];
     winBanner.style.display = "block";
-    winBanner.innerHTML = ` صح! الدولة كانت ${mystery.flag} ${mystery.n} / ${mystery.en} — بعد ${n} تخمين${n>1?'ات':''}! (+${xp} XP)<br>
-     Correct! It was ${mystery.en} — solved in ${n} guess${n>1?'es':''}! (+${xp} XP)
+    winBanner.innerHTML = ` صح! الدولة كانت ${mystery.flag} ${mystery.n} / ${mystery.en}، بعد ${n} تخمين${n>1?'ات':''}! (+${xp} XP)<br>
+     Correct! It was ${mystery.en}, solved in ${n} guess${n>1?'es':''}! (+${xp} XP)
     ${fact ? `<div style="margin-top:10px;padding-top:10px;font-size:13px;font-weight:400;text-align:right"> معلومة ممتعة / Fun fact: ${fact}</div>` : ''}`;
     updateTopStats();
   }
@@ -1253,8 +1253,8 @@ function renderProgressTab(){
   document.getElementById('pLevel').textContent = level;
   document.getElementById('pXP').textContent = PROGRESS.xp;
   document.getElementById('pAttempts').textContent = PROGRESS.totalSolved;
-  document.getElementById('pAvg').textContent = PROGRESS.totalSolved ? (PROGRESS.totalGuesses/PROGRESS.totalSolved).toFixed(1) : "—";
-  document.getElementById('pBestGuess').textContent = PROGRESS.bestGuessCount ?? "—";
+  document.getElementById('pAvg').textContent = PROGRESS.totalSolved ? (PROGRESS.totalGuesses/PROGRESS.totalSolved).toFixed(1) : "0";
+  document.getElementById('pBestGuess').textContent = PROGRESS.bestGuessCount ?? "0";
   document.getElementById('pStreak').textContent = (PROGRESS.streak||0) + " ";
   document.getElementById('pBestStreak').textContent = PROGRESS.bestStreak||0;
 
@@ -1264,7 +1264,7 @@ function renderProgressTab(){
   barsEl.innerHTML = recent.map(h=>{
     const h_ = Math.max(6, (h.guesses/maxG)*100);
     const color = h.guesses<=3 ? '#2f6b4f' : h.guesses<=6 ? '#c9a13b' : '#b4483d';
-    return `<div title="${h.guesses} guesses — ${h.country}" style="width:18px;height:${h_}%;background:${color};border-radius:3px 3px 0 0;"></div>`;
+    return `<div title="${h.guesses} guesses, ${h.country}" style="width:18px;height:${h_}%;background:${color};border-radius:3px 3px 0 0;"></div>`;
   }).join('') || '<div class="note">العب أول لغز عشان تشوف السجل / Play a round to see history</div>';
 
   const tbody = document.getElementById('historyTable').querySelector('tbody');
@@ -1306,7 +1306,7 @@ document.getElementById('resetBtn').addEventListener('click', ()=>{
 });
 
 /* ================================================================
-   CITIES MODE — a second, independent globe for guessing capital
+   CITIES MODE, a second, independent globe for guessing capital
    cities (reuses the same country dataset: each entry's lat/lon
    IS its capital city). Separate rotation/zoom/draw state so both
    tabs keep working independently.
@@ -1499,7 +1499,7 @@ function drawCityGlobe(){
     });
   });
 
-  // city dots (the actual game pieces) — dimmed if outside the current continent filter
+  // city dots (the actual game pieces), dimmed if outside the current continent filter
   WORLD_CITIES.forEach(c=>{
     const p = projectC(c.lat, c.lon);
     if(!p.visible) return;
@@ -1747,7 +1747,7 @@ function renderGuessesC(){
       <span class="gdir">${dir}</span>
       <span class="gdist">${Math.round(g.dist)} km</span>
     </div>`;
-  }).join('') || `<div class="note">لسا ما خمّنت... جرّب أول مدينة! / No guesses yet — try your first city!</div>`;
+  }).join('') || `<div class="note">لسا ما خمّنت... جرّب أول مدينة! / No guesses yet, try your first city!</div>`;
   document.getElementById('statGuessesC').textContent = guessesC.length;
 }
 
@@ -1791,8 +1791,8 @@ function submitGuessC(){
 
     const fact = COUNTRY_FACTS[mysteryC.countryEn];
     winBannerC.style.display = "block";
-    winBannerC.innerHTML = ` صح! المدينة كانت ${mysteryC.flag} ${mysteryC.city} / ${mysteryC.cityEn} — في ${mysteryC.country} / ${mysteryC.countryEn} — بعد ${n} تخمين${n>1?'ات':''}! (+${xp} XP)<br>
-     Correct! It was ${mysteryC.cityEn}, in ${mysteryC.countryEn} — solved in ${n} guess${n>1?'es':''}! (+${xp} XP)
+    winBannerC.innerHTML = ` صح! المدينة كانت ${mysteryC.flag} ${mysteryC.city} / ${mysteryC.cityEn}، في ${mysteryC.country} / ${mysteryC.countryEn}, بعد ${n} تخمين${n>1?'ات':''}! (+${xp} XP)<br>
+     Correct! It was ${mysteryC.cityEn}, in ${mysteryC.countryEn}, solved in ${n} guess${n>1?'es':''}! (+${xp} XP)
     ${fact ? `<div style="margin-top:10px;padding-top:10px;font-size:13px;font-weight:400;text-align:right"> معلومة ممتعة / Fun fact: ${fact}</div>` : ''}`;
     updateTopStats();
     updateTopStatsC();
