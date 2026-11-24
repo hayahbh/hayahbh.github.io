@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>خبير الجغرافيا</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1234,7 +1235,7 @@ canvas.addEventListener('pointerup', e=>{
   dragging=false; lastDragTime = performance.now();
   if(activeTouches.size>=2){ velLambda=0; velPhi=0; tapStart=null; return; }
   const p = pointerPos(e);
-  if(tapStart && !tapStart.multi && Math.hypot(p.x-tapStart.x, p.y-tapStart.y) < 12){
+  if(tapStart && !tapStart.multi && Math.hypot(p.x-tapStart.x, p.y-tapStart.y) < 28){
     velLambda=0; velPhi=0;
     const rect = canvas.getBoundingClientRect();
     updateHover(p.x, p.y, e.clientX-rect.left, e.clientY-rect.top);
@@ -1825,7 +1826,7 @@ canvasC.addEventListener('pointerup', e=>{
   draggingC=false; lastDragTimeC = performance.now();
   if(activeTouchesC.size>=2){ velLambdaC=0; velPhiC=0; tapStartC=null; return; }
   const p = pointerPosC(e);
-  if(tapStartC && !tapStartC.multi && Math.hypot(p.x-tapStartC.x, p.y-tapStartC.y) < 12){
+  if(tapStartC && !tapStartC.multi && Math.hypot(p.x-tapStartC.x, p.y-tapStartC.y) < 28){
     velLambdaC=0; velPhiC=0;
     const rect = canvasC.getBoundingClientRect();
     updateHoverC(p.x, p.y, e.clientX-rect.left, e.clientY-rect.top);
@@ -2258,6 +2259,17 @@ document.querySelectorAll('#chTimes .dbtn').forEach(b=>b.addEventListener('click
 updateTopStats();
 newRound();
 animate();
+
+
+/* tap fallback: some phones only send a click for a quick tap, so name the country on click too */
+[['globeCanvas',pointerPos,updateHover,clearHover],['globeCanvasC',pointerPosC,updateHoverC,clearHoverC]].forEach(([id,posFn,upd,clr])=>{
+  const cv=document.getElementById(id); let t=null;
+  cv.addEventListener('click', e=>{
+    const p=posFn(e), r=cv.getBoundingClientRect();
+    upd(p.x, p.y, e.clientX-r.left, e.clientY-r.top);
+    if(matchMedia('(hover: none)').matches){ clearTimeout(t); t=setTimeout(clr, 2500); }
+  });
+});
 
 /* profiles: sign up / switch player */
 (function(){
