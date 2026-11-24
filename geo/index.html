@@ -264,6 +264,18 @@
   .theme-btn{border:0;background:color-mix(in srgb,var(--ink) 8%,transparent);}
   .zoom-btn{border:0!important;}
   .progress-outer{background:color-mix(in srgb,var(--ink) 7%,transparent);}
+  /* no boxes at all: controls are plain text, colour marks what is active */
+  button.primary,button.ghost,.tab-btn,.theme-btn,.zoom-btn{background:transparent!important;border:0!important;box-shadow:none!important;}
+  button.primary{color:var(--num)!important;font-size:17px;font-weight:800;}
+  button.ghost{color:var(--ink)!important;opacity:.8;}
+  button.primary:hover:not(:disabled),button.ghost:hover:not(:disabled){transform:none;opacity:1;color:var(--num)!important;}
+  .tab-btn{color:var(--muted)!important;font-size:15px;}
+  .tab-btn.active{color:var(--num)!important;font-weight:800;}
+  .zoom-btn{color:var(--ink)!important;font-size:24px;}
+  #guessInput,#guessInputC,select{background:transparent!important;border:0!important;box-shadow:none!important;font-size:18px;}
+  #guessInput:focus,#guessInputC:focus{box-shadow:none!important;}
+  .guess-row::before{display:none;}
+  .progress-outer{background:transparent;}
 </style>
 </head>
 <body>
