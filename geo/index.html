@@ -251,6 +251,19 @@
   #globeWrap,#globeWrapC{background:transparent!important;box-shadow:none!important;padding:8px 0 4px!important;border-radius:0!important;overflow:visible;}
   .globe-hint{color:var(--muted);}
   .zoom-btn{background:color-mix(in srgb,var(--ink) 10%,transparent);color:var(--ink);border-color:color-mix(in srgb,var(--ink) 18%,transparent);}
+  /* no outlined boxes: soft fills only where a control needs one */
+  .guess-row{background:transparent!important;padding:10px 4px;margin-bottom:2px;}
+  .guess-row::before{border-radius:12px;opacity:.9;}
+  .hint-box,.giveup-box,.win-banner,#feedback{background:transparent!important;border:0!important;box-shadow:none!important;padding:10px 0!important;}
+  .win-banner{color:var(--num);font-size:17px;}
+  #guessInput,#guessInputC,select{border:0!important;background:color-mix(in srgb,var(--ink) 8%,transparent)!important;}
+  button.ghost{border:0!important;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink);}
+  button.ghost:hover:not(:disabled){background:color-mix(in srgb,var(--ink) 14%,transparent);}
+  .tabs{background:transparent;padding:0;}
+  .tab-btn:not(.active){background:color-mix(in srgb,var(--ink) 6%,transparent);}
+  .theme-btn{border:0;background:color-mix(in srgb,var(--ink) 8%,transparent);}
+  .zoom-btn{border:0!important;}
+  .progress-outer{background:color-mix(in srgb,var(--ink) 7%,transparent);}
 </style>
 </head>
 <body>
