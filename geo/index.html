@@ -246,6 +246,11 @@
   @media (max-width:600px){ body{padding-top:18px;} .card{padding:14px;border-radius:18px;} .tabs{width:100%;} .tab-btn{flex:1;padding:8px 6px;} }
   @media (prefers-reduced-motion: reduce){ *{transition:none!important;} }
   #globeCanvas,#globeCanvasC{-webkit-mask-image:radial-gradient(closest-side,#000 86%,transparent 100%);mask-image:radial-gradient(closest-side,#000 86%,transparent 100%);}
+  /* one continuous page: no boxed sections */
+  .card{background:transparent!important;box-shadow:none!important;border:0!important;padding:8px 0!important;border-radius:0!important;}
+  #globeWrap,#globeWrapC{background:transparent!important;box-shadow:none!important;padding:8px 0 4px!important;border-radius:0!important;overflow:visible;}
+  .globe-hint{color:var(--muted);}
+  .zoom-btn{background:color-mix(in srgb,var(--ink) 10%,transparent);color:var(--ink);border-color:color-mix(in srgb,var(--ink) 18%,transparent);}
 </style>
 </head>
 <body>
